@@ -1,0 +1,58 @@
+services:
+  eat24.base_service:
+    abstract: true
+    class: AppBundle\Service\BaseService
+    calls:
+      - [ setServiceContainer, ["@service_container"] ]
+      - [ setEntityManager, ["@doctrine.orm.entity_manager"] ]
+      - [ setLogger, ["@monolog.logger.exception"] ]
+      - [ setTranslator, ["@translator.default"] ]
+
+  eat24.authenticate_authorize_service:
+    class: AppBundle\Service\AuthenticateAuthorize
+    parent: eat24.base_service
+    public: true
+
+  eat24.utils:
+    class: AppBundle\Service\Utils
+    parent: eat24.base_service
+    public: true
+
+  eat24.user_api_validate_service:
+    class: AppBundle\Service\UserApiValidationService
+    parent: eat24.base_service
+    public: true
+
+  eat24.user_api_processing_service:
+    class: AppBundle\Service\UserApiProcessingService
+    parent: eat24.base_service
+    public: true
+
+  eat24.api_response_service:
+    class: AppBundle\Service\ApiResponse
+    parent: eat24.base_service
+    public: true
+
+  eat24.exception_listener:
+    class: AppBundle\EventListener\ExceptionListener
+    parent: eat24.base_service
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+      - { name: monolog.logger, channel: exception }
+    public: true
+
+  eat24.request_listener:
+    class: AppBundle\EventListener\RequestListener
+    parent: eat24.base_service
+    arguments: ["@monolog.logger.api"]
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+      - { name: monolog.logger, channel: api }
+    public: true
+
+  eat24.response_listener:
+    class: AppBundle\EventListener\ResponseListener
+    parent: eat24.base_service
+    arguments: ["@monolog.logger.api"]
+    tags:
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
