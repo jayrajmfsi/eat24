@@ -3,19 +3,24 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
     database_host: 127.0.0.1
-    database_port: ~
+    database_port: 3306
     database_name: symfony
     database_user: root
-    database_password: ~
+    database_password: mindfire
     # You should uncomment this if you want to use pdo_sqlite
     #database_path: '%kernel.project_dir%/var/data/data.sqlite'
 
     mailer_transport: smtp
     mailer_host: 127.0.0.1
-    mailer_user: ~
-    mailer_password: ~
+    mailer_user: jayraja@mindfiresolutions.com
+    mailer_password: jayraj1
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
     allowed_ips_during_maintenance:
         - 127.0.0.1
+    mailer_port: 465
+    mailer_encryption: ssl
+    api_secret: jayraj
+    api_access_token_expiry: 5
+    api_refresh_token_expiry: 726363727
