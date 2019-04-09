@@ -227,4 +227,49 @@ class ProfileController extends AbstractFOSRestController
 
         return $response;
     }
+
+    /**
+     * @Post("/profile.{_format}")
+     * @Options("/profile.{_format}")
+     * @param Request $request
+     * @return array
+     */
+    public function getUser(Request $request)
+    {
+        $logger = $this->container->get('monolog.logger.exception');
+        // $response to be returned from API.
+        $response = NULL;
+        try {
+            // Processing the request and creating the final streamed response to be sent in response.
+            $profileResut = $this->container
+                ->get('eat24.user_api_processing_service')
+                ->processGetUserProfileRequest($request->attributes->get('emailId'))
+            ;
+
+            // Creating final response Array to be released from API Controller.
+            $response = $this->container
+                ->get('eat24.api_response_service')
+                ->getUserApiSuccessResponse(
+                    'UserResponse',
+                    $profileResut['message']['response']['profileDetails']
+                )
+            ;
+        } catch (AccessDeniedHttpException $ex) {
+            throw $ex;
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
+        } catch (HttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $logger->error(__FUNCTION__.' function failed due to Error : '.
+                $ex->getMessage());
+            // Throwing Internal Server Error Response In case of Unknown Errors.
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $response;
+    }
+
 }

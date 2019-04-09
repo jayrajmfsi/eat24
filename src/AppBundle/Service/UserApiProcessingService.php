@@ -5,6 +5,7 @@ namespace AppBundle\Service;
 use AppBundle\Constants\ErrorConstants;
 use AppBundle\Entity\User;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class UserApiProcessingService extends BaseService
 {
@@ -137,8 +138,13 @@ class UserApiProcessingService extends BaseService
                 $data['username'] = $requestContent['UserRequest']['username'];
             }
 
-            if (!empty($requestContent['UserRequest']['newPassword'])) {
-                $data['password'] = $requestContent['UserRequest']['newPassword'];
+            if (!empty($requestContent['UserRequest']['newPassword'])
+                || !empty($requestContent['UserRequest']['password'])
+            ) {
+                $data['password'] = isset($requestContent['UserRequest']['newPassword'])
+                    ? $requestContent['UserRequest']['newPassword']
+                    : $requestContent['UserRequest']['password']
+                ;
             }
 
             // Setting the email in data if User is being Created.
@@ -216,30 +222,30 @@ class UserApiProcessingService extends BaseService
     /**
      *  Function to process the GET request for user's Profile.
      *
-     *  @param User $user (default = null)
-     *
+     *  @param string $email
      *  @return array
      */
-    public function processGetUserProfileRequest($user = null)
+    public function processGetUserProfileRequest($email)
     {
         $processResult['status'] = false;
         try {
-            $user = !empty($user) ? $user : $this->getCurrentUser();
-
+            /** @var User $userDetails */
+            $userDetails = $this->serviceContainer->get('fos_user.user_manager')
+                ->findUserByEmail($email)
+            ;
+            if (empty($userDetails)) {
+                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_EMAIL);
+            }
             // Creating ProfileResponse Array.
-            $profileResponse = [
-                'isEnabled' => $user->isEnabled(),
-                'roles' => $user->getRoles(),
-            ];
-
-
-            $profileResponse['username'] = $user->getUsername();
-            $profileResponse['email'] = $user->getEmail();
+            $profileResponse['username'] = $userDetails->getUserName();
+            $profileResponse['phoneNumber'] = $userDetails->getContactNumber();
 
             $processResult['message']['response'] = [
                 'profileDetails' => $profileResponse,
             ];
             $processResult['status'] = true;
+        } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
         } catch (\Exception $ex) {
             $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);

@@ -99,4 +99,24 @@ class ApiResponse extends BaseService
             $responseKey => $data,
         ];
     }
+
+    /**
+     *  Function to create final Success User API response.
+     *
+     *  @param string $responseKey
+     *  @param array $user
+     *
+     *  @return array
+     */
+    public function getUserApiSuccessResponse($responseKey, $user)
+    {
+        return [
+            'reasonCode' => '0',
+            'reasonText' => $this->translator->trans('api.response.success.message'),
+            $responseKey => [
+                'phoneNumber' => $user['phoneNumber'],
+                'username' => $user['username']
+            ],
+        ];
+    }
 }

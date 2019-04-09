@@ -7,6 +7,7 @@
 
 namespace AppBundle\EventListener;
 
+use Doctrine\DBAL\Types\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +70,7 @@ class RequestListener extends BaseService
         $authService = $this->serviceContainer->get('eat24.authenticate_authorize_service');
 
         // authentication of a particular user
-        if (!strpos($request->getPathInfo(), '/oauth')) {
+        if (!strpos($request->getPathInfo(), '/oauth') && !strpos($request->getPathInfo(), '/create')) {
             $authResult = $authService->authenticateApiRequest($request);
 
             $request->attributes->set('emailId', $authResult['message']['emailId']);

@@ -28,6 +28,16 @@ services:
     parent: eat24.base_service
     public: true
 
+  eat24.restaurant_api_processing_service:
+    class: AppBundle\Service\RestaurantApiProcessingService
+    parent: eat24.base_service
+    public: true
+
+  eat24.restaurant_api_validate_service:
+    class: AppBundle\Service\RestaurantApiValidatingService
+    parent: eat24.base_service
+    public: true
+
   eat24.api_response_service:
     class: AppBundle\Service\ApiResponse
     parent: eat24.base_service

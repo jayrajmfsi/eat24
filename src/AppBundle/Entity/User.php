@@ -19,44 +19,14 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\Column(name="address", type="text", nullable=true)
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Address", mappedBy="customer")
      */
     protected $address;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\City")
-     * @ORM\JoinColumn(name="city_id", referencedColumnName="id")
-     */
-    protected $city;
 
     /**
      * @ORM\Column(name="phone_number", type="bigint", nullable=true)
      */
     protected $contactNumber;
-
-    /**
-     * Set address
-     *
-     * @param string $address
-     *
-     * @return User
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    /**
-     * Get address
-     *
-     * @return string
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
 
     /**
      * Set contactNumber
@@ -80,24 +50,5 @@ class User extends BaseUser
     public function getContactNumber()
     {
         return $this->contactNumber;
-    }
-
-    /**
-     * @return \AppBundle\Entity\City
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * @param mixed $city
-     * @return \AppBundle\Entity\User
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-
-        return $this;
     }
 }

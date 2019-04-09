@@ -212,7 +212,6 @@ class UserApiValidationService extends BaseService
         $validateResult['status'] = false;
         try {
             $userManager = $this->serviceContainer->get('fos_user.user_manager');
-
             // Checking that all the required keys should be present.
             if (empty($requestContent['UserRequest'])) {
                 throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
@@ -220,7 +219,6 @@ class UserApiValidationService extends BaseService
 
             $user = $userManager->findUserBy(['email' => $email]);
             if (empty($user)) {
-
                 throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_EMAIL);
             }
 

@@ -6,7 +6,7 @@ api:
       invalid_credentials: Invalid Credentials found in Request Content.
       internal_error: An error occurred on the server.  Some extra detail may exist in the Response object.
       invalid_content_type: "Content-Type not set in the header or the content type/content is invalid."
-      invalid_request_data: "The transaction was rejected due to invalid request content provided."
+      invalid_request_data: "The operation was rejected due to invalid request content provided."
       invalid_authentication: This request failed to be authenticated.
       invalid_authorization: This Request failed because User was denied access of requested Resource.
       resource_not_found: The resource request could not be found on the server.
@@ -34,7 +34,9 @@ api:
       invalid_terminal_id: "Request could not be processed because of either Invalid Terminal Id or Terminal not in state to perform any transaction."
       no_allowed_merchant_found: "No Allowed Merchant Found to use for Eload Products Sync."
       invalid_supplier_code: "Invalid Supplier Code found in request."
-      invalid_product_id: "Invalid Product ID found in request content."
+      invalid_filter_request: "Invalid Filter Content found in request content"
+      invalid_sort_request: "Invalid Sort Content found in request content"
+      invalid_pagination_request: "Invalid Pagination Content found in request content"
       invalid_phone_number: "Invalid Phone number found in request content."
       service_not_allowed: "Merchant is not allowed to use the service."
       insufficient_merchant_balance: "Insufficient Merchant Balance for doing the transaction."

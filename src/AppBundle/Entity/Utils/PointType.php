@@ -40,7 +40,12 @@ class PointType extends Type
         return true;
     }
 
-    public function convertToPHPValueSQL($sqlExpr, AbstractPlatform $platform)
+    /**
+     * @param string $sqlExpr
+     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
+     * @return string
+     */
+    public function convertToPHPValueSQL($sqlExpr, $platform)
     {
         return sprintf('AsText(%s)', $sqlExpr);
     }

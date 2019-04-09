@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Utils\Point;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,22 +24,9 @@ class Restaurant
     /**
      * @var string
      *
-     * @ORM\Column(name="address", type="text")
+     * @ORM\Column(type="string")
      */
-    private $address;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\City")
-     * @ORM\JoinColumn(name="city_id", referencedColumnName="id")
-     */
-    private $city;
-
-    /**
-     * @var Point
-     * @ORM\Column(name="location", type="point")
-     *
-     */
-    private $location;
+    private $name;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Cuisine", inversedBy="restaurants")
@@ -52,6 +38,20 @@ class Restaurant
         $this->cuisines = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+
+    /**
+     * @var float
+     * @ORM\Column(name="cost", type="integer", nullable=true)
+     */
+    private $cost;
+
+    /**
+     * @var float
+     * @ORM\Column(type="decimal", precision=2, scale=1)
+     */
+    private $rating;
+
+
     /**
      * Get id
      * @return int
@@ -60,74 +60,6 @@ class Restaurant
     {
         return $this->id;
     }
-
-    /**
-     * Set address
-     *
-     * @param string $address
-     *
-     * @return Restaurant
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    /**
-     * Get address
-     *
-     * @return string
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * @return City
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * @param mixed $city
-     * @return Restaurant
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * Set location
-     *
-     * @param Point $location
-     *
-     * @return Restaurant
-     */
-    public function setLocation(Point $location)
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
-    /**
-     * Get location
-     *
-     * @return Point
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
 
     public function addCuisine(Cuisine $cuisine)
     {
@@ -149,6 +81,22 @@ class Restaurant
     public function getCuisines()
     {
         return $this->cuisines;
+    }
+
+    /**
+     * @param string string
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }
 
