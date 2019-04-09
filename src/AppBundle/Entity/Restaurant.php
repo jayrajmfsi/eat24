@@ -12,6 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Restaurant
 {
+    public static $allowedSortingAttributesMap = [
+        'cost' => 'cost',
+        'recentlyAdded' => 'createdDateTime',
+        'restaurantRating' => 'rating',
+    ];
     /**
      * @var int
      *
@@ -38,7 +43,6 @@ class Restaurant
         $this->cuisines = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-
     /**
      * @var float
      * @ORM\Column(name="cost", type="integer", nullable=true)
@@ -51,6 +55,15 @@ class Restaurant
      */
     private $rating;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdDateTime;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastUpdatedDateTime;
 
     /**
      * Get id
@@ -98,5 +111,117 @@ class Restaurant
     {
         return $this->name;
     }
-}
 
+    /**
+     * Set cost
+     *
+     * @param integer $cost
+     *
+     * @return Restaurant
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return integer
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * Set rating
+     *
+     * @param string $rating
+     *
+     * @return Restaurant
+     */
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    /**
+     * Get rating
+     *
+     * @return string
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function beforeSave()
+    {
+        $this->createdDateTime = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function beforeUpdate()
+    {
+        $this->lastUpdatedDateTime = new \DateTime();
+    }
+
+    /**
+     * Set createdDateTime
+     *
+     * @param \DateTime $createdDateTime
+     *
+     * @return Restaurant
+     */
+    public function setCreatedDateTime($createdDateTime)
+    {
+        $this->createdDateTime = $createdDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get createdDateTime
+     *
+     * @return \DateTime
+     */
+    public function getCreatedDateTime()
+    {
+        return $this->createdDateTime;
+    }
+
+    /**
+     * Set lastUpdatedDateTime
+     *
+     * @param \DateTime $lastUpdatedDateTime
+     *
+     * @return Restaurant
+     */
+    public function setLastUpdatedDateTime($lastUpdatedDateTime)
+    {
+        $this->lastUpdatedDateTime = $lastUpdatedDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get lastUpdatedDateTime
+     *
+     * @return \DateTime
+     */
+    public function getLastUpdatedDateTime()
+    {
+        return $this->lastUpdatedDateTime;
+    }
+}

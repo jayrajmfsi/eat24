@@ -13,8 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Address
 {
-    const CUSTOMER_ADDRESS = 1;
-    const RESTAURANT_ADDRESS = 2;
+    const CUSTOMER_ADDRESS = 'USER';
+    const RESTAURANT_ADDRESS = 'RESTAURANT';
 
     /**
      * @var int

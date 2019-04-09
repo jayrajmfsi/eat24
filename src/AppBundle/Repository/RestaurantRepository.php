@@ -2,6 +2,13 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Address;
+use AppBundle\Entity\Restaurant;
+use AppBundle\Entity\Utils\Point;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
+
 /**
  * RestaurantRepository
  *
@@ -10,4 +17,72 @@ namespace AppBundle\Repository;
  */
 class RestaurantRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Fetch restaurant list data
+     * @param array $filter
+     * @param array $sort
+     * @param array $pagination
+     * @param integer $restaurantRange
+     * @return array
+     * @throws ORMException
+     */
+    public function fetchRestaurantListData($filter = [], $sort = [], $pagination = [], $restaurantRange = null)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        // applying filters
+        $qb = $this->addFilterSortParameters($qb, $filter, $sort, $restaurantRange);
+        $qb->setFirstResult(($pagination['page'] - 1) * $pagination['limit'])
+            ->setMaxResults($pagination['limit'])
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     *  Function to add Filter and Sort parameters to List Query Builder.
+     *
+     *  @param QueryBuilder $qb
+     *  @param array $filter
+     *  @param array $sort
+     *  @param integer $restaurantRange
+     *  @return QueryBuilder
+     *  @throws ORMException
+     */
+    public function addFilterSortParameters($qb, $filter = [], $sort = [], $restaurantRange = null)
+    {
+        $params = [];
+
+        // Adding Filters to QueryBuilder
+        if (isset($filter['restaurantName'])) {
+            $qb->where('r.name LIKE :restaurant');
+            $params['restaurant'] = '%'.$filter['restaurantName'].'%';
+        }
+
+        if (isset($filter['latitude']) && isset($filter['longitude'])) {
+            $geoPoint = new Point($filter['latitude'], $filter['longitude']);
+            $qb->join('AppBundle:Address', 'a', Join::WITH, 'a.customerId = r.id AND a.addressType=:type');
+            $qb->andWhere('ST_DISTANCE_SPHERE(a.geoPoint, POINT_STR(:point)) / 1000 <='.$restaurantRange);
+            $params['type'] = Address::RESTAURANT_ADDRESS;
+            $params['point'] = $geoPoint;
+        }
+
+        if (isset($filter['cuisine'])) {
+            $qb->join('r.cuisines', 'c');
+            $qb->andWhere('c.name=:cuisine');
+            $params['cuisine'] = $filter['cuisine'];
+        }
+
+        // Adding Sorting to QueryBuilder
+        if (!empty($sort)) {
+            $qb->addOrderBy('r.'. Restaurant::$allowedSortingAttributesMap[$sort[0]], $sort[1]);
+        } else {
+            $qb->addOrderBy('r.'.Restaurant::$allowedSortingAttributesMap['restaurantRating'], 'DESC');
+        }
+
+        // Setting the Parameters.
+        $qb->setParameters($params);
+
+        return $qb;
+    }
 }

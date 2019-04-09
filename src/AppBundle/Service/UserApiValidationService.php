@@ -52,108 +52,6 @@ class UserApiValidationService extends BaseService
     }
 
     /**
-     *  Function to validate the Users list/Export API request.
-     *
-     *  @param array $requestContent
-     *  @param bool $isExport (default = false)
-     *
-     *  @return array
-     */
-    public function validateUsersListExportRequest($requestContent, $isExport = false)
-    {
-        $validateResult['status'] = false;
-        try {
-            $content = [];
-            // Validating the filters Key Values.
-            if (
-                    !empty($requestContent['filter']['username'])
-                &&  strlen($requestContent['filter']['username']) <= 100
-            ) {
-                $content['filter']['username'] = $requestContent['filter']['username'];
-            }
-
-            if (
-                    !empty($requestContent['filter']['email'])
-                &&  strlen($requestContent['filter']['email']) <= 100
-            ) {
-                $content['filter']['email'] = $requestContent['filter']['email'];
-            }
-
-            if (isset($requestContent['filter']['isEnabled'])) {
-                $content['filter']['isEnabled'] = is_bool($requestContent['filter']['isEnabled'])
-                    ? $requestContent['filter']['isEnabled']
-                    : true
-                ;
-            }
-
-            // Validating the Created Date time.
-            if (
-                    !empty($requestContent['filter']['createdDate']['from'])
-                &&  !empty($createdFromDate = \DateTime::createFromFormat('Y-m-d',
-                    $requestContent['filter']['createdDate']['from']))
-            ) {
-                $content['filter']['createdDate']['from'] = $createdFromDate;
-            }
-
-            if (
-                    !empty($requestContent['filter']['createdDate']['to'])
-                &&  !empty($createdToDate = \DateTime::createFromFormat('Y-m-d',
-                    $requestContent['filter']['createdDate']['to']))
-            ) {
-                $content['filter']['createdDate']['to'] = $createdToDate;
-            }
-
-            if (
-                    empty($content['filter']['createdDate']['from'])
-                &&  !empty($content['filter']['createdDate']['to'])
-            ) {
-                $content['filter']['createdDate']['from'] = $content['filter']['createdDateTime']['to'];
-            }
-
-            if (
-                    !empty($content['filter']['createdDate']['from'])
-                &&  empty($content['filter']['createdDate']['to'])
-            ) {
-                $content['filter']['createdDate']['to'] = $content['filter']['createdDateTime']['from'];
-            }
-
-            // Validating the Sort attributes.
-            if (
-                    !empty($requestContent['sort'])
-                &&  2 === count($requestContent['sort'])
-                &&  isset(User::$allowedSortingAttributesMap[$requestContent['sort'][0]])
-            ) {
-                $content['sort'][] = $requestContent['sort'][0];
-                $content['sort'][] = ('ASC' === $requestContent['sort'][1] || 'DESC' === $requestContent['sort'][1])
-                    ? $requestContent['sort'][1]
-                    : 'ASC'
-                ;
-            }
-
-            // Checking if isExport is not set.
-            if (!$isExport) {
-                // Validating the pagination parameters.
-                $content['pagination'] = $this->serviceContainer
-                    ->get('eat24.utils')
-                    ->validatePaginationArray($requestContent['pagination'])
-                ;
-            }
-
-            if (!empty($content)) {
-                $validateResult['message']['response'] = [
-                    'content' => $content
-                ];
-            }
-            $validateResult['status'] = true;
-        } catch (\Exception $ex) {
-            $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
-            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
-        }
-
-        return $validateResult;
-    }
-
-    /**
      *  Function to validate the Create User request.
      *
      *  @param array $requestContent
@@ -258,10 +156,6 @@ class UserApiValidationService extends BaseService
 
         return $validateResult;
     }
-
-
-
-
 
     /**
      *  Function to Validate the oauth refresh API request.

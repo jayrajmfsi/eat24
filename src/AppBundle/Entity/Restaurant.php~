@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Utils\Point;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,25 +24,40 @@ class Restaurant
     /**
      * @var string
      *
-     * @ORM\Column(name="address", type="text")
+     * @ORM\Column(type="string")
      */
-    private $address;
+    private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\City")
-     * @ORM\JoinColumn(name="city_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Cuisine", inversedBy="restaurants")
+     * @ORM\JoinTable(name="restaurant_cuisines")
      */
-    private $city;
+    private $cuisines;
+
+    public function __construct() {
+        $this->cuisines = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
-     * @var Point
-     * @ORM\Column(name="location", type="point")
-     *
+     * @var float
+     * @ORM\Column(name="cost", type="integer", nullable=true)
      */
-    private $location;
+    private $cost;
+
+    /**
+     * @var float
+     * @ORM\Column(type="decimal", precision=2, scale=1)
+     */
+    private $rating;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $earliestDeliveryTime;
+
     /**
      * Get id
-     *
      * @return int
      */
     public function getId()
@@ -51,47 +65,42 @@ class Restaurant
         return $this->id;
     }
 
-    /**
-     * Set address
-     *
-     * @param string $address
-     *
-     * @return Restaurant
-     */
-    public function setAddress($address)
+    public function addCuisine(Cuisine $cuisine)
     {
-        $this->address = $address;
+        $this->cuisines[] = $cuisine;
 
         return $this;
     }
 
+    public function removeCuisine(Cuisine $cuisine)
+    {
+        $this->cuisines->removeElement($cuisine);
+    }
+
     /**
-     * Get address
+     * Get cuisines
      *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCuisines()
+    {
+        return $this->cuisines;
+    }
+
+    /**
+     * @param string string
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
      * @return string
      */
-    public function getAddress()
+    public function getName()
     {
-        return $this->address;
-    }
-
-    /**
-     * @return City
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * @param mixed $city
-     * @return Restaurant
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-
-        return $this;
+        return $this->name;
     }
 }
 

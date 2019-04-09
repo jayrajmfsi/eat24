@@ -28,14 +28,14 @@ class TestCommand extends ContainerAwareCommand
             $em = $container->get('doctrine.orm.default_entity_manager');
             $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('point', 'point');
 
-//            $location = new Restaurant();
-//
-//            $location->setAddress('1600 Amphitheatre Parkway, Mountain View, CA');
-//            $location->setLocation(new Point(37.4220761, -122.0845187));
-//
-//            $em->persist($location);
-//            $em->flush();
-//            $em->clear();
+            $location = new Restaurant();
+
+            $location->setAddress('1600 Amphitheatre Parkway, Mountain View, CA');
+            $location->setLocation(new Point(37.4220761, -122.0845187));
+
+            $em->persist($location);
+            $em->flush();
+            $em->clear();
 
             // Fetch the Location object
             $query = $em->createQuery("SELECT l FROM AppBundle\Entity\Restaurant l WHERE l.address = '1600 Amphitheatre Parkway, Mountain View, CA'");

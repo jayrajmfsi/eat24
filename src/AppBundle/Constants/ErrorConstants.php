@@ -38,7 +38,6 @@ final class ErrorConstants
     const INVALID_PRODUCT_ID = 'INVALIDPRODID';
     const INVALID_PHONE_NUMBER = 'INVALIDPHONENO';
     const SERVICE_ACCESS_NOT_ALLOWED = 'SERVICENOTALLOWED';
-    const INSUFFICIENT_MERCHANT_BALANCE = 'INSUFFICIENTMERCHANTBALANCE';
     const INVALID_MERCHANT_NAME = 'INVALIDMERCHANTNAME';
     const INVALID_BUSINESS_NAME = 'INVALIDBUSINESSNAME';
     const INVALID_MERCHANT_STATUS = 'INVALIDMERCHANTSTATUS';
@@ -46,8 +45,6 @@ final class ErrorConstants
     const INVALID_MERCHANT_API_KEY = 'INVALIDMERCHANTAPIKEY';
     const INVALID_TERMINAL_STATUS = 'INVALIDTERMINALSTATUS';
     const INVALID_TERMINAL_IDENTIFIER_ID = 'INVALIDTERMINALIDENTIFIERID';
-    const MERCHANT_ID_PREEXIST = 'MERCHANTIDPREEXIST';
-    const TERMINAL_ID_PREEXIST = 'TERMINALIDPREEXIST';
     const INVALID_USERNAME = 'INVALIDUSERNAME';
     const INVALID_PASS = 'INVALIDPASS';
     const INVALID_CRED = 'INVALIDCRED';
@@ -58,6 +55,9 @@ final class ErrorConstants
     const USERNAME_EXISTS = 'USERNAMEPREEXIST';
     const PHONE_NUMBER_EXISTS = 'PHONENUMBEREXIST';
     const EMAIL_EXISTS = 'EMAILPREEXISTS';
+    const INVALID_FILTER_REQUEST = 'INVALIDFILTERREQUEST';
+    const INVALID_SORT_REQUEST = 'INVALIDSORTREQUEST';
+    const INVALID_PAGINATION_REQUEST = 'INVALIDPAGINATIONREQUEST';
     const INVALID_REFRESH_TOKEN = 'INVALIDREFRESHTOKEN';
     const EXPIRED_REFRESH_TOKEN = 'EXPIREDREFRESHTOKEN';
     const INVALID_MONTH = 'INVALIDMONTH';
@@ -92,12 +92,12 @@ final class ErrorConstants
         self::MISSING_AUTH_FIELD => ['code' => '1013', 'message' => 'api.response.error.empty_auth_fields'],
         self::PHONE_NUMBER_EXISTS => ['code' => '1014', 'message' => 'api.response.error.phone_number_exists'],
         self::INVALID_TERMINAL => ['code' => '1015', 'message' => 'api.response.error.invalid_terminal_id'],
-        self::INVALID_SUPPLIER_CODE => ['code' => '1016', 'message' => 'api.response.error.invalid_supplier_code'],
-        self::INVALID_PRODUCT_ID => ['code' => '1017', 'message' => 'api.response.error.invalid_product_id'],
+        self::INVALID_SORT_REQUEST => ['code' => '1016', 'message' => 'api.response.error.invalid_sort_request'],
+        self::INVALID_FILTER_REQUEST => ['code' => '1017', 'message' => 'api.response.error.invalid_filter_request'],
         self::INVALID_PHONE_NUMBER => ['code' => '1018', 'message' => 'api.response.error.invalid_phone_number'],
         self::SERVICE_ACCESS_NOT_ALLOWED => ['code' => '1019', 'message' => 'api.response.error.service_not_allowed'],
-        self::INSUFFICIENT_MERCHANT_BALANCE =>
-            ['code' => '1020', 'message' => 'api.response.error.insufficient_merchant_balance'],
+        self::INVALID_PAGINATION_REQUEST =>
+            ['code' => '1020', 'message' => 'api.response.error.invalid_pagination_request'],
         self::INVALID_MERCHANT_NAME => ['code' => '1021', 'message' => 'api.response.error.invalid_merchant_name'],
         self::INVALID_BUSINESS_NAME => ['code' => '1022', 'message' => 'api.response.error.invalid_business_name'],
         self::INVALID_MERCHANT_STATUS => ['code' => '1023', 'message' => 'api.response.error.invalid_merchant_status'],
@@ -107,10 +107,6 @@ final class ErrorConstants
         self::INVALID_TERMINAL_STATUS => ['code' => '1026', 'message' => 'api.response.error.invalid_terminal_status'],
         self::INVALID_TERMINAL_IDENTIFIER_ID =>
             ['code' => '1027', 'message' => 'api.response.error.invalid_terminal_identifier_id'],
-        self::MERCHANT_ID_PREEXIST =>
-            ['code' => '1028', 'message' => 'api.response.error.merchant_id_preexist'],
-        self::TERMINAL_ID_PREEXIST =>
-            ['code' => '1029', 'message' => 'api.response.error.terminal_id_preexist'],
         self::INVALID_PASS => ['code' => '1030', 'message' => 'api.response.error.invalid_password_format'],
         self::INVALID_MONTH => ['code' => '1031', 'message' => 'api.response.error.invalid_month'],
         self::INVALID_YEAR => ['code' => '1032', 'message' => 'api.response.error.invalid_year'],

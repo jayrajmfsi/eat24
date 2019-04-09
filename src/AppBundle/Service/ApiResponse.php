@@ -39,23 +39,20 @@ class ApiResponse extends BaseService
     }
 
     /**
-     *  Function to create response of GET Suppliers API.
+     *  Function to create response of restaurant list.
      *
-     *  @param array $requestContent
-     *  @param array $suppliers
+     *  @param string $responseKey
+     *  @param array $data
      *
      *  @return array
      */
-    public function createGetSuppliersApiResponse($requestContent, $suppliers)
+    public function createRestaurantListResponse($responseKey, $data)
     {
         return [
             'Response' => [
                 'reasonCode' => '0',
                 'reasonText' => $this->translator->trans('api.response.success.message'),
-                'satn' => $requestContent['Request']['satn'],
-                'merchantId' => $requestContent['Request']['merchantId'],
-                'terminalId' => $requestContent['Request']['terminalId'],
-                'suppliers' => $suppliers
+                $responseKey => $data
             ]
         ];
     }
