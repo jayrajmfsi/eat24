@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="restaurant")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RestaurantRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Restaurant
 {
@@ -48,6 +49,18 @@ class Restaurant
      * @ORM\Column(name="cost", type="integer", nullable=true)
      */
     private $cost;
+
+    /**
+     * @var string
+     * @ORM\Column(name="reference", type="string", nullable=true)
+     */
+    private $reference;
+
+    /**
+     * @var string
+     * @ORM\Column(name="image_file_name", type="string", nullable=true)
+     */
+    private $imageFileName;
 
     /**
      * @var float
@@ -167,6 +180,7 @@ class Restaurant
     public function beforeSave()
     {
         $this->createdDateTime = new \DateTime();
+        $this->reference = round(microtime(true) * 1000) . mt_rand(100, 999) . '';
     }
 
     /**
@@ -223,5 +237,53 @@ class Restaurant
     public function getLastUpdatedDateTime()
     {
         return $this->lastUpdatedDateTime;
+    }
+
+    /**
+     * Set imagePath
+     *
+     * @param string $imageFileName
+     *
+     * @return Restaurant
+     */
+    public function setImageFileName($imageFileName)
+    {
+        $this->imageFileName = $imageFileName;
+
+        return $this;
+    }
+
+    /**
+     * Get imageFileName
+     *
+     * @return string
+     */
+    public function getImageFileName()
+    {
+        return $this->imageFileName;
+    }
+
+    /**
+     * Set reference
+     *
+     * @param string $reference
+     *
+     * @return Restaurant
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
+
+        return $this;
+    }
+
+    /**
+     * Get reference
+     *
+     * @return string
+     */
+    public function getReference()
+    {
+        return $this->reference;
     }
 }

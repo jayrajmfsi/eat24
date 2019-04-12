@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\InRestaurant;
+
 /**
  * InRestaurantRepository
  *
@@ -10,4 +12,21 @@ namespace AppBundle\Repository;
  */
 class InRestaurantRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function fetchMenuItems($restaurantId)
+    {
+        $qb = $this->createQueryBuilder('in_restaurant')
+            ->join('in_restaurant.menuItem', 'menu_item')
+            ->join('menu_item.category', 'category')
+            ->select('in_restaurant.price')
+            ->addSelect('in_restaurant.description')
+            ->addSelect('menu_item.isVeg')
+            ->addSelect('menu_item.name')
+            ->addSelect('category.name as categoryName')
+            ->where('in_restaurant.restaurant = :restaurant')
+            ->andWhere('in_restaurant.active = :active')
+            ->setParameter('restaurant', $restaurantId)
+            ->setParameter('active', InRestaurant::ACTIVE)
+        ;
+        return $qb->getQuery()->getArrayResult();
+    }
 }

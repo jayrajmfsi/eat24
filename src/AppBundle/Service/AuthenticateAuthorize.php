@@ -49,7 +49,7 @@ class AuthenticateAuthorize extends BaseService
                     count($authorizationParts) !== 2 || 'Eat24' !== $authorizationParts[0]
                 ||  empty(trim($authorizationParts[1]))
             ) {
-                throw new UnauthorizedHttpException(null, ErrorConstants::INVALID_AUTH_CONTENT);
+                throw new UnauthorizedHttpException(null, ErrorConstants::INVALID_AUTHENTICATION);
             }
 
             // Parsing String Token to JWT Token Object.

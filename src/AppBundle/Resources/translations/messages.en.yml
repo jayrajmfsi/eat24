@@ -15,7 +15,7 @@ api:
       request_timed_out: "The request has timed out,
               i.e. request was not received within expected time interval by server."
       service_unavailable: "Service is currently under maintenance, please try again later."
-      invalid_satn: Invalid satn(System Audit Trail Number) provided in request.
+      invalid_address_code: "Invalid address code provided in request."
       bad_gateway: "RDN B2B Eload server, while acting as a gateway or proxy,
               received an invalid response from Mobile Platform Server while attempting to fulfill the request."
       gateway_timeout: "No response received by requesting server within specified time,
@@ -34,8 +34,8 @@ api:
       invalid_terminal_id: "Request could not be processed because of either Invalid Terminal Id or Terminal not in state to perform any transaction."
       no_allowed_merchant_found: "No Allowed Merchant Found to use for Eload Products Sync."
       invalid_supplier_code: "Invalid Supplier Code found in request."
-      invalid_filter_request: "Invalid Filter Content found in request content"
-      invalid_sort_request: "Invalid Sort Content found in request content"
+      invalid_geo_point: "Invalid Geo location point found in request content"
+      invalid_restaurant_code: "Invalid Restaurant Code found in request content"
       invalid_pagination_request: "Invalid Pagination Content found in request content"
       invalid_phone_number: "Invalid Phone number found in request content."
       service_not_allowed: "Merchant is not allowed to use the service."
@@ -72,6 +72,8 @@ api:
       password_reset: The password was reset successfully.
       user_created: User was created successfully.
       user_updated: User was updated successfully.
+      address_added: Address was added succesfully.
+      address_updated: Address was updated succesfully.
 
     failure:
       message: failure

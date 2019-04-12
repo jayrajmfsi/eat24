@@ -13,12 +13,6 @@ class RestaurantApiValidatingService extends BaseService
     {
         $validateResult['status'] = false;
         try {
-            $content = [];
-            if (empty($requestContent['RestaurantDetailsRequest'])) {
-                return $validateResult;
-            }
-
-            $requestContent = $requestContent['RestaurantDetailsRequest'];
             // Validating the filters Key Values.
             if (
                 !empty($requestContent['filter']['restaurantName'])
@@ -26,8 +20,8 @@ class RestaurantApiValidatingService extends BaseService
             ) {
                 $content['filter']['restaurantName'] = $requestContent['filter']['restaurantName'];
             }
-            if (!empty($requestContent['filter']['longitude']) && is_float($requestContent['filter']['longitude'])
-                &&  !empty($requestContent['filter']['latitude'] && $requestContent['filter']['latitude'])
+            if (!empty($requestContent['filter']['longitude']) && (float)($requestContent['filter']['longitude'])
+                &&  !empty($requestContent['filter']['latitude'] && (float)($requestContent['filter']['latitude']))
             ) {
                 $content['filter']['longitude'] = $requestContent['filter']['longitude'];
                 $content['filter']['latitude'] = $requestContent['filter']['latitude'];
@@ -50,7 +44,6 @@ class RestaurantApiValidatingService extends BaseService
             }
 
             $content['pagination'] = $this->validatePaginationArray($requestContent['pagination']);
-
             if (!empty($content)) {
                 $validateResult['message']['response'] = [
                     'content' => $content
@@ -58,7 +51,6 @@ class RestaurantApiValidatingService extends BaseService
             }
 
             $validateResult['status'] = true;
-
         } catch (BadRequestHttpException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
@@ -80,20 +72,56 @@ class RestaurantApiValidatingService extends BaseService
     {
         $validateResult = [];
         // Validating the pagination parameters.
-        $validateResult['page'] = (empty($pagination['pagination']['page'])
-            || !ctype_digit($pagination['pagination']['page'])
-            || $pagination['pagination']['page'] < 1)
+        $validateResult['page'] = (empty($pagination['page'])
+            || !ctype_digit($pagination['page'])
+            || $pagination['page'] < 1)
             ? 1
-            : $pagination['pagination']['page']
+            : $pagination['page']
         ;
-
-        $validateResult['limit'] = (empty($pagination['pagination']['limit'])
-            || !ctype_digit($pagination['pagination']['limit'])
-            || $pagination['pagination']['limit'] < 1)
+        $validateResult['limit'] = (empty($pagination['limit'])
+            || !ctype_digit($pagination['limit'])
+            || $pagination['limit'] < 1)
             ? 10
-            : $pagination['pagination']['limit']
+            : $pagination['limit']
         ;
+        return $validateResult;
+    }
+
+    public function validateListMenuRequest($requestContent)
+    {
+        $validateResult['status'] = false;
+        try {
+            // Validating the filters Key Values.
+            if (empty($requestContent['RestaurantMenuRequest'])
+                || empty($requestContent['RestaurantMenuRequest']['restaurantCode'])
+            ) {
+                throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
+            }
+
+            $restaurant = $this->entityManager->getRepository('AppBundle:Restaurant')
+                ->findOneBy(['reference' => $requestContent['RestaurantMenuRequest']['restaurantCode']])
+            ;
+
+            if (!$restaurant) {
+                throw new BadRequestHttpException(ErrorConstants::INVLAID_RESTAURANT_CODE);
+            }
+            $validateResult['response'] = [
+                'restaurant' => $restaurant
+            ];
+            $validateResult['status'] = true;
+
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
 
         return $validateResult;
+    }
+
+    public function validateCreateOrderRequest()
+    {
+
     }
 }

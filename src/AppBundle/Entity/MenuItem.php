@@ -35,6 +35,13 @@ class MenuItem
     private $category;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean", length=1, nullable=false, name="is_veg",
+     *  options={"comment":"0 means non vegitarian, 1 means vegitarian", "default":"1"})
+     */
+    private $isVeg;
+
+    /**
      * Get id
      *
      * @return int
@@ -90,5 +97,29 @@ class MenuItem
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Set isVeg
+     *
+     * @param boolean $isVeg
+     *
+     * @return MenuItem
+     */
+    public function setIsVeg($isVeg)
+    {
+        $this->isVeg = $isVeg;
+
+        return $this;
+    }
+
+    /**
+     * Get isVeg
+     *
+     * @return boolean
+     */
+    public function getIsVeg()
+    {
+        return $this->isVeg;
     }
 }

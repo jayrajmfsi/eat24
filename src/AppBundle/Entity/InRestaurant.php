@@ -12,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class InRestaurant
 {
+    const ACTIVE = 1;
+    const INACTIVE = 0;
+
     /**
      * @var int
      *
@@ -31,7 +34,8 @@ class InRestaurant
     /**
      * @var bool
      *
-     * @ORM\Column(name="active", type="boolean")
+     * @ORM\Column(name="active", type="boolean", nullable=false,length=1,
+     * options={"comment":"0 means inactive, 1 means active", "default":"1"})
      */
     private $active;
 

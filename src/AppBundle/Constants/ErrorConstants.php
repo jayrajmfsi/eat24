@@ -14,14 +14,13 @@ final class ErrorConstants
     const INVALID_CONTENT_TYPE = 'INVALIDCONTENTTYPE';
     const INVALID_CONTENT_LENGTH = 'INVALIDCONTENTLEN';
     const INVALID_REQ_DATA = 'INVALIDREQDATA';
-    const INVALID_AUTH_CONTENT = 'INVALIDAUTHCONTENT';
     const RESOURCE_NOT_FOUND = 'NORESOURCEFOUND';
     const INVALID_AUTHENTICATION = 'INVALIDAUTHENTICATION';
     const INVALID_AUTHORIZATION = 'INVALIDAUTHORIZATION';
     const METHOD_NOT_ALLOWED = 'METHODNOTALLOWED';
     const REQ_TIME_OUT = 'REQTIMEOUT';
     const SERVICE_UNAVAIL = 'SERVICEUNAVAIL';
-    const INVALID_SATN = 'INVALIDSATN';
+    const INVALID_ADDRESS_CODE = 'INVALIDADDRESSCODE';
     const INVALID_MERCHANT = 'INVALIDMERCHANT';
     const INVALID_TERMINAL = 'INVALIDTERMINAL';
     const INVALID_CURRENCY_CODE = 'INVALIDCURRENCYCODE';
@@ -55,8 +54,8 @@ final class ErrorConstants
     const USERNAME_EXISTS = 'USERNAMEPREEXIST';
     const PHONE_NUMBER_EXISTS = 'PHONENUMBEREXIST';
     const EMAIL_EXISTS = 'EMAILPREEXISTS';
-    const INVALID_FILTER_REQUEST = 'INVALIDFILTERREQUEST';
-    const INVALID_SORT_REQUEST = 'INVALIDSORTREQUEST';
+    const INVALID_GEO_POINT = 'INVALIDGEOPOINT';
+    const INVLAID_RESTAURANT_CODE = 'INVALID_RESTAURANT_CODE';
     const INVALID_PAGINATION_REQUEST = 'INVALIDPAGINATIONREQUEST';
     const INVALID_REFRESH_TOKEN = 'INVALIDREFRESHTOKEN';
     const EXPIRED_REFRESH_TOKEN = 'EXPIREDREFRESHTOKEN';
@@ -80,7 +79,7 @@ final class ErrorConstants
         self::INVALID_AUTHENTICATION => ['code' => '1001', 'message' => 'api.response.error.invalid_auth_fields'],
         self::INCOMPLETE_REQ => ['code' => '1002', 'message' => 'api.response.error.incomplete_req'],
         self::INVALID_REQ_DATA => ['code' => '1003', 'message' => 'api.response.error.invalid_request_data'],
-        self::INVALID_SATN => ['code' => '1004', 'message' => 'api.response.error.invalid_satn'],
+        self::INVALID_ADDRESS_CODE => ['code' => '1004', 'message' => 'api.response.error.invalid_address_code'],
         self::INVALID_AMOUNT => ['code' => '1005', 'message' => 'api.response.error.invalid_amount'],
         self::INVALID_CURRENCY_CODE => ['code' => '1006', 'message' => 'api.response.error.invalid_currency_code'],
         self::INVALID_DATE_TIME => ['code' => '1007', 'message' => 'api.response.error.invalid_date_time'],
@@ -92,8 +91,8 @@ final class ErrorConstants
         self::MISSING_AUTH_FIELD => ['code' => '1013', 'message' => 'api.response.error.empty_auth_fields'],
         self::PHONE_NUMBER_EXISTS => ['code' => '1014', 'message' => 'api.response.error.phone_number_exists'],
         self::INVALID_TERMINAL => ['code' => '1015', 'message' => 'api.response.error.invalid_terminal_id'],
-        self::INVALID_SORT_REQUEST => ['code' => '1016', 'message' => 'api.response.error.invalid_sort_request'],
-        self::INVALID_FILTER_REQUEST => ['code' => '1017', 'message' => 'api.response.error.invalid_filter_request'],
+        self::INVLAID_RESTAURANT_CODE => ['code' => '1016', 'message' => 'api.response.error.invalid_restaurant_code'],
+        self::INVALID_GEO_POINT => ['code' => '1017', 'message' => 'api.response.error.invalid_geo_point'],
         self::INVALID_PHONE_NUMBER => ['code' => '1018', 'message' => 'api.response.error.invalid_phone_number'],
         self::SERVICE_ACCESS_NOT_ALLOWED => ['code' => '1019', 'message' => 'api.response.error.service_not_allowed'],
         self::INVALID_PAGINATION_REQUEST =>

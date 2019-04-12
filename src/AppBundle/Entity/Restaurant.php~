@@ -12,6 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Restaurant
 {
+    public static $allowedSortingAttributesMap = [
+        'cost' => 'cost',
+        'recentlyAdded' => 'createdDateTime',
+        'restaurantRating' => 'rating',
+    ];
     /**
      * @var int
      *
@@ -45,16 +50,32 @@ class Restaurant
     private $cost;
 
     /**
+     * @var string
+     * @ORM\Column(name="reference", type="string", nullable=true)
+     */
+    private $reference;
+
+    /**
+     * @var string
+     * @ORM\Column(name="image_file_name", type="string", nullable=true)
+     */
+    private $imageFileName;
+
+    /**
      * @var float
      * @ORM\Column(type="decimal", precision=2, scale=1)
      */
     private $rating;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $earliestDeliveryTime;
+    private $createdDateTime;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastUpdatedDateTime;
 
     /**
      * Get id
@@ -102,5 +123,141 @@ class Restaurant
     {
         return $this->name;
     }
-}
 
+    /**
+     * Set cost
+     *
+     * @param integer $cost
+     *
+     * @return Restaurant
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return integer
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * Set rating
+     *
+     * @param string $rating
+     *
+     * @return Restaurant
+     */
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    /**
+     * Get rating
+     *
+     * @return string
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function beforeSave()
+    {
+        $this->createdDateTime = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function beforeUpdate()
+    {
+        $this->lastUpdatedDateTime = new \DateTime();
+    }
+
+    /**
+     * Set createdDateTime
+     *
+     * @param \DateTime $createdDateTime
+     *
+     * @return Restaurant
+     */
+    public function setCreatedDateTime($createdDateTime)
+    {
+        $this->createdDateTime = $createdDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get createdDateTime
+     *
+     * @return \DateTime
+     */
+    public function getCreatedDateTime()
+    {
+        return $this->createdDateTime;
+    }
+
+    /**
+     * Set lastUpdatedDateTime
+     *
+     * @param \DateTime $lastUpdatedDateTime
+     *
+     * @return Restaurant
+     */
+    public function setLastUpdatedDateTime($lastUpdatedDateTime)
+    {
+        $this->lastUpdatedDateTime = $lastUpdatedDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get lastUpdatedDateTime
+     *
+     * @return \DateTime
+     */
+    public function getLastUpdatedDateTime()
+    {
+        return $this->lastUpdatedDateTime;
+    }
+
+    /**
+     * Set imagePath
+     *
+     * @param string $imageFileName
+     *
+     * @return Restaurant
+     */
+    public function setImageFileName($imageFileName)
+    {
+        $this->imageFileName = $imageFileName;
+
+        return $this;
+    }
+
+    /**
+     * Get imageFileName
+     *
+     * @return string
+     */
+    public function getImageFileName()
+    {
+        return $this->imageFileName;
+    }
+}

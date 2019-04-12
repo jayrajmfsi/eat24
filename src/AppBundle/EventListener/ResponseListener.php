@@ -41,7 +41,11 @@ class ResponseListener extends BaseService
         $request = $event->getRequest();
         $response = $event->getResponse();
         $routeName = $request->attributes->get('_route');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT');
+        $response->headers->set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
+//        $response->headers->set('Access-Control-Allow-Credentials', 'true');
         $mainLogData = [
             'host' => $request->getSchemeAndHttpHost(),
             'method' => $request->getMethod()

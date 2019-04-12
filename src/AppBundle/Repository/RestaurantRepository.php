@@ -26,7 +26,7 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
      * @return array
      * @throws ORMException
      */
-    public function fetchRestaurantListData($filter = [], $sort = [], $pagination = [], $restaurantRange = null)
+    public function fetchRestaurantListData($filter = [], $sort = [], $pagination = [], $restaurantRange = 10)
     {
         $qb = $this->createQueryBuilder('r');
 
@@ -49,7 +49,7 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
      *  @return QueryBuilder
      *  @throws ORMException
      */
-    public function addFilterSortParameters($qb, $filter = [], $sort = [], $restaurantRange = null)
+    public function addFilterSortParameters($qb, $filter = [], $sort = [], $restaurantRange)
     {
         $params = [];
 
@@ -84,5 +84,27 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
         $qb->setParameters($params);
 
         return $qb;
+    }
+    /**
+     *  Function to count the number of records for applied filters and sort
+     *  parameters.
+     *
+     *  @param array $filter
+     *  @param array $sort
+     *
+     *  @return integer
+     *  @throws ORMException
+     */
+    public function countUserRecords($filter = [], $sort = [], $restaurantRange = 10)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->select('count(r.id) as totalRecords')
+        ;
+
+        // Applying Filters.
+        $qb = $this->addFilterSortParameters($qb, $filter, $sort, $restaurantRange);
+
+        return (int)$qb->getQuery()->getArrayResult()[0]['totalRecords'];
     }
 }

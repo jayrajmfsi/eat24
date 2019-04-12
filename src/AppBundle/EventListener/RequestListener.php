@@ -46,6 +46,13 @@ class RequestListener extends BaseService
         // Checking the route hit by request is topps API route or not.
         $route = $request->attributes->get('_route');
 
+        $this->setRequestContent($request);
+
+        // Checking if request is not for APIs.
+        if (false === strpos($route, 'api_v')) {
+            return true;
+        }
+
         // Logging request.
         $this->apiLogger->debug('API Request: ', [
             'Request' => [
@@ -60,17 +67,15 @@ class RequestListener extends BaseService
             return true;
         }
 
-        // Checking if request is not for APIs.
-        if (false === strpos($route, 'api_v')) {
-            return true;
-        }
-
-        $this->setRequestContent($request);
         // Getting Auth Service.
         $authService = $this->serviceContainer->get('eat24.authenticate_authorize_service');
 
         // authentication of a particular user
-        if (!strpos($request->getPathInfo(), '/oauth') && !strpos($request->getPathInfo(), '/create')) {
+        if (!strpos($request->getPathInfo(), '/oauth')
+            && !strpos($request->getPathInfo(), '/create')
+            && !strpos($request->getPathInfo(), '/restaurant/list')
+            && !strpos($request->getPathInfo(), '/restaurant/menu')
+        ) {
             $authResult = $authService->authenticateApiRequest($request);
 
             $request->attributes->set('emailId', $authResult['message']['emailId']);

@@ -356,6 +356,7 @@ class UserApiValidationService extends BaseService
      *
      *  @param string $email
      *  @param User $user (default = null)
+     *  @return User
      *
      *  @return void
      */
@@ -375,5 +376,66 @@ class UserApiValidationService extends BaseService
         if (!empty($emailUser) && (empty($user) || $user->getId() !== $emailUser->getId())) {
             throw new UnprocessableEntityHttpException(ErrorConstants::EMAIL_EXISTS);
         }
+        return $emailUser;
+    }
+
+
+    public function validateAddUpdateAddressRequest($requestContent, $emailId, $isUpdate = false)
+    {
+        $validateResult['status'] = false;
+        try {
+            $validateResult['user'] = $this->serviceContainer
+                ->get('eat24.authenticate_authorize_service')->getUser($emailId)
+            ;
+            if ($isUpdate) {
+                if (empty($requestContent['UserDeliveryAddressRequest'])
+                    || empty($requestContent['UserDeliveryAddressRequest']['addressCode'])
+                ) {
+                    throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
+                }
+
+                $address = $this->entityManager->getRepository('AppBundle:Address')
+                    ->findOneBy(
+                        [
+                            'token' => $requestContent['UserDeliveryAddressRequest']['addressCode'],
+                            'customerId' => ($validateResult['user'])->getId()
+                        ]
+                    )
+                ;
+                if (empty($address)) {
+                    throw new BadRequestHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
+                }
+                $validateResult['address'] = $address;
+                $validateResult['status'] = true;
+                return $validateResult;
+            } else {
+                // checking for add address request
+                if (empty($requestContent['UserDeliveryAddressRequest'])
+                    ||  empty($requestContent['UserDeliveryAddressRequest']['location'])
+                    || empty($requestContent['UserDeliveryAddressRequest']['longitude'])
+                    || empty($requestContent['UserDeliveryAddressRequest']['latitude'])
+                    || empty($requestContent['UserDeliveryAddressRequest']['completeAddress'])
+                ) {
+                    throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
+                }
+
+                // Checking the type of both fields of point.
+                if (!(float)$requestContent['UserDeliveryAddressRequest']['latitude'] ||
+                    !(float)$requestContent['UserDeliveryAddressRequest']['longitude']
+                ) {
+                    throw new BadRequestHttpException(ErrorConstants::INVALID_GEO_POINT);
+                }
+            }
+
+
+            $validateResult['status'] = true;
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $validateResult;
     }
 }

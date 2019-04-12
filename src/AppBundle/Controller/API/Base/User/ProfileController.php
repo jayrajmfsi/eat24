@@ -5,6 +5,7 @@ namespace AppBundle\Controller\API\Base\User;
 use AppBundle\Constants\ErrorConstants;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Options;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -234,7 +235,7 @@ class ProfileController extends AbstractFOSRestController
      * @param Request $request
      * @return array
      */
-    public function getUser(Request $request)
+    public function getUserDetails(Request $request)
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
@@ -272,4 +273,63 @@ class ProfileController extends AbstractFOSRestController
         return $response;
     }
 
+    /**
+     * To create/update address details of user
+     *
+     * @Post("/address.{_format}")
+     * @Put("/address.{_format}")
+     * @Options("/oauth.{_format}")
+     * @param Request $request
+     *
+     *  @return array
+     **/
+    public function createUpdateAddress(Request $request)
+    {
+        $logger = $this->container->get('monolog.logger.exception');
+        // $response to be returned from API.
+        $response = NULL;
+        try {
+            $utils = $this->container->get('eat24.utils');
+            // Trimming Request Content.
+            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
+
+            $isUpdate = Request::METHOD_PUT === $request->getMethod();
+            // Validating the request content.
+            $validatedResult = $this->container
+                ->get('eat24.user_api_validate_service')
+                ->validateAddUpdateAddressRequest($content, $request->attributes->get('emailId'), $isUpdate)
+            ;
+            $address = $validatedResult['address'] ? $validatedResult['address'] : null;
+            // Processing Request Content and Getting Result.
+            $result = $this->container->get('eat24.user_api_processing_service')
+                ->processUpdateAddressRequest($content['UserDeliveryAddressRequest'], $validatedResult['user'], $address)
+            ;
+
+            $transMessageKey = (false === $isUpdate) ? 'api.response.success.address_added'
+                :  'api.response.success.address_updated'
+            ;
+            // Creating and final array of response from API.
+            $response = $this->container
+                ->get('eat24.api_response_service')
+                ->createUserApiSuccessResponse(
+                    'UserDeliveryAddressResponse', [
+                    'status' => $this->container->get('translator.default')->trans($transMessageKey),
+                    'addressCode' => $result['addressCode']
+                ])
+            ;
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
+        } catch (HttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $logger->error(__FUNCTION__.' function failed due to Error : '.
+                $ex->getMessage());
+            // Throwing Internal Server Error Response In case of Unknown Errors.
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $response;
+    }
 }

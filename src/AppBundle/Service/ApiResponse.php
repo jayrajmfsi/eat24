@@ -39,25 +39,6 @@ class ApiResponse extends BaseService
     }
 
     /**
-     *  Function to create response of restaurant list.
-     *
-     *  @param string $responseKey
-     *  @param array $data
-     *
-     *  @return array
-     */
-    public function createRestaurantListResponse($responseKey, $data)
-    {
-        return [
-            'Response' => [
-                'reasonCode' => '0',
-                'reasonText' => $this->translator->trans('api.response.success.message'),
-                $responseKey => $data
-            ]
-        ];
-    }
-
-    /**
      *  Function to create response of GET products API.
      *
      *  @param array $requestContent

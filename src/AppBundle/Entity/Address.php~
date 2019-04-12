@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="address")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AddressRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class Address
 {
@@ -71,6 +70,13 @@ class Address
     private $nickName;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="city", type="string", length=255, nullable=false)
+     */
+    private $city;
+
+    /**
      * Get id
      *
      * @return int
@@ -105,13 +111,6 @@ class Address
     }
 
     /**
-     * @ORM\PrePersist()
-     */
-    public function beforeSave()
-    {
-        $this->token = round(microtime(true) * 1000) . mt_rand(100, 999) . '';
-    }
-    /**
      * Set geoPoint
      *
      * @param Point $geoPoint
@@ -136,6 +135,30 @@ class Address
     }
 
     /**
+     * Set city
+     *
+     * @param string $city
+     *
+     * @return Address
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * Get city
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
      * @return string
      */
     public function getAddressType()
@@ -156,7 +179,7 @@ class Address
      */
     public function setCustomerId($customerId)
     {
-        $this->customerId = $customerId;
+        $this->customer = $customerId;
     }
 
     /**
@@ -213,29 +236,5 @@ class Address
     public function getNickName()
     {
         return $this->nickName;
-    }
-
-    /**
-     * Set token
-     *
-     * @param string $token
-     *
-     * @return Address
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-
-        return $this;
-    }
-
-    /**
-     * Get token
-     *
-     * @return string
-     */
-    public function getToken()
-    {
-        return $this->token;
     }
 }

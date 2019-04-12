@@ -35,6 +35,13 @@ class MenuItem
     private $category;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean", length=1, nullable=false, name="is_veg",
+     *  options={"comment":"0 means non vegitarian, 1 means vegitarian", "default":"1"})
+     */
+    private $isVeg;
+
+    /**
      * Get id
      *
      * @return int
@@ -68,6 +75,27 @@ class MenuItem
         return $this->name;
     }
 
+    /**
+     * Set category
+     *
+     * @param \AppBundle\Entity\Category $category
+     *
+     * @return MenuItem
+     */
+    public function setCategory(\AppBundle\Entity\Category $category = null)
+    {
+        $this->category = $category;
 
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \AppBundle\Entity\Category
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
 }
-

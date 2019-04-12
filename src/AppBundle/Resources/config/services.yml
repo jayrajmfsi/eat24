@@ -37,7 +37,6 @@ services:
     class: AppBundle\Service\RestaurantApiValidatingService
     parent: eat24.base_service
     public: true
-
   eat24.api_response_service:
     class: AppBundle\Service\ApiResponse
     parent: eat24.base_service

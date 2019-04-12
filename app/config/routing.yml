@@ -14,12 +14,6 @@ eat24_1.0_user:
     prefix:   /1.0/eat24/user
     defaults: {"_format": "json"}
 
-eat24_1.0_order:
-    resource: "@AppBundle/Controller/API/V10/Order/"
-    type:     annotation
-    prefix:   /1.0/eat24/order
-    defaults: {"_format":"json"}
-
 eat24.swagger_ui:
     path: /api/doc/
     methods: GET

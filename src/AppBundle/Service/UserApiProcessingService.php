@@ -3,7 +3,9 @@
 namespace AppBundle\Service;
 
 use AppBundle\Constants\ErrorConstants;
+use AppBundle\Entity\Address;
 use AppBundle\Entity\User;
+use AppBundle\Entity\Utils\Point;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -185,7 +187,6 @@ class UserApiProcessingService extends BaseService
     {
         $userManipulator = $this->serviceContainer->get('fos_user.util.user_manipulator');
 
-
         if (empty($user)) {
             // Creating User.
             /** @var User $user */
@@ -275,6 +276,58 @@ class UserApiProcessingService extends BaseService
             ;
 
             $processResult['status'] = true;
+        } catch (\Exception $ex) {
+            $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $processResult;
+    }
+
+    /**
+     * @param $requestContent
+     * @param User $user
+     * @param mixed $address
+     * @return mixed
+     */
+    public function processUpdateAddressRequest($requestContent, $user, $address = null)
+    {
+        $processResult['status'] = false;
+        if (empty($address)) {
+            $address = new Address();
+        }
+        try {
+            if (!empty($requestContent['location'])) {
+                $data['mapLocation'] = $requestContent['location'];
+            }
+
+            if (!empty($requestContent['nickName'])) {
+                $data['nickName'] = $requestContent['nickName'];
+            }
+
+            if (!empty($requestContent['completeAddress'])) {
+                $data['completeAddress'] = $requestContent['completeAddress'];
+            }
+
+            // if array is not a empty then update the details.
+            if (!empty($data)) {
+                /** @var Address $address */
+                $address = $this->serviceContainer->get('eat24.utils')
+                    ->createObjectFromArray($data, Address::class, $address)
+                ;
+            }
+
+            if (!empty($requestContent['latitude']) && !empty($requestContent['longitude'])) {
+                $address->setGeoPoint(new Point($requestContent['latitude'], $requestContent['longitude']));
+            }
+            $address->setAddressType(Address::CUSTOMER_ADDRESS);
+            $address->setCustomerId($user->getId());
+            $this->entityManager->persist($address);
+            $this->entityManager->flush();
+
+            $processResult['addressCode'] = $address->getToken();
+            $processResult['status'] = true;
+
         } catch (\Exception $ex) {
             $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
