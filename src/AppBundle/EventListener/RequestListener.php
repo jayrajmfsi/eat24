@@ -71,9 +71,10 @@ class RequestListener extends BaseService
         $authService = $this->serviceContainer->get('eat24.authenticate_authorize_service');
 
         // authentication of a particular user
-        if (!strpos($request->getPathInfo(), '/oauth')
-            && !strpos($request->getPathInfo(), '/create')
-            && !strpos($request->getPathInfo(), '/restaurant/list')
+        if (!strpos($request->getPathInfo(), '/login')
+            && !strpos($request->getPathInfo(), '/users')
+            && !strpos($request->getPathInfo(), '/renew')
+            && !strpos($request->getPathInfo(), '/restaurants')
             && !strpos($request->getPathInfo(), '/restaurant/menu')
         ) {
             $authResult = $authService->authenticateApiRequest($request);

@@ -20,8 +20,8 @@ class ProfileController extends AbstractFOSRestController
     /**
      * To POST username and password of user and create Access and Refresh token for User.
      *
-     * @Post("/oauth.{_format}")
-     * @Options("/oauth.{_format}")
+     * @Post("/login.{_format}")
+     * @Options("/login.{_format}")
      * @param Request $request
      *
      *  @return array
@@ -30,11 +30,11 @@ class ProfileController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             $utils = $this->container->get('eat24.utils');
             // Trimming Request Content.
-            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
+            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), true));
             // Validating the request content.
             $this->container
                 ->get('eat24.user_api_validate_service')
@@ -71,8 +71,8 @@ class ProfileController extends AbstractFOSRestController
      *
      * Creates new Access Token using refresh token and returns in response.
      *
-     * @Post("/oauth/refresh.{_format}")
-     * @Options("/oauth/refresh.{_format}")
+     * @Post("/renew.{_format}")
+     * @Options("/renew.{_format}")
      * @param Request $request
      * @return array
      */
@@ -80,11 +80,11 @@ class ProfileController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             $utils = $this->container->get('eat24.utils');
             // Trimming Request Content.
-            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
+            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), true));
 
             // Validating the request content.
             $this->container
@@ -118,8 +118,8 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
-     * @Post("/create.{_format}")
-     * @Options("/create.{_format}")
+     * @Post("/users.{_format}")
+     * @Options("/users.{_format}")
      * @param Request $request
      * @return array
      */
@@ -127,10 +127,10 @@ class ProfileController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             $utils = $this->container->get('eat24.utils');
-            $content = json_decode(trim($request->getContent()), TRUE);
+            $content = json_decode(trim($request->getContent()), true);
             // Trimming Request Content.
             $content = !empty($content) ? $utils->trimArrayValues($content) : $content;
 
@@ -174,8 +174,8 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
-     * @Post("/update.{_format}")
-     * @Options("/update.{_format}")
+     * @Put("/users.{_format}")
+     * @Options("/users.{_format}")
      * @param Request $request
      * @return array
      */
@@ -183,10 +183,10 @@ class ProfileController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             $utils = $this->container->get('eat24.utils');
-            $content = json_decode(trim($request->getContent()), TRUE);
+            $content = json_decode(trim($request->getContent()), true);
             // Trimming Request Content.
             $content = !empty($content) ? $utils->trimArrayValues($content) : $content;
 
@@ -233,14 +233,13 @@ class ProfileController extends AbstractFOSRestController
     /**
      * @Get("/profile.{_format}")
      * @Options("/profile.{_format}")
-     * @param Request $request
      * @return array
      */
-    public function getUserDetails(Request $request)
+    public function getUserDetails()
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             // Processing the request and creating the final streamed response to be sent in response.
             $profileResult = $this->container
@@ -279,8 +278,8 @@ class ProfileController extends AbstractFOSRestController
     /**
      * To create/update address details of user
      *
-     * @Post("/address.{_format}")
-     * @Put("/address.{_format}")
+     * @Post("/users/addresses.{_format}")
+     * @Put("/users/addresses.{_format}")
      * @Options("/address.{_format}")
      * @param Request $request
      *
@@ -290,11 +289,11 @@ class ProfileController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             $utils = $this->container->get('eat24.utils');
             // Trimming Request Content.
-            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
+            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), true));
 
             $isUpdate = Request::METHOD_PUT === $request->getMethod();
             // Validating the request content.
@@ -339,8 +338,8 @@ class ProfileController extends AbstractFOSRestController
     /**
      * To get address list of user
      *
-     * @Get("/address.{_format}")
-     * @Options("/address.{_format}")
+     * @Get("/users/addresses.{_format}")
+     * @Options("/users/addresses.{_format}")
      * @param Request $request
      *
      *  @return array
@@ -349,7 +348,7 @@ class ProfileController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             // Processing email id and getting response.
             $result = $this->container->get('eat24.user_api_processing_service')->processListAddressRequest();
@@ -377,19 +376,19 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
-     * @Delete("/address.{_format}")
-     * @Options("/address.{_format}")
+     * @Delete("/users/addresses.{_format}")
+     * @Options("/users/addresses.{_format}")
      * @param Request $request
      * @return array|null
      */
     public function deleteAddress(Request $request)
     {
         $logger = $this->container->get('monolog.logger.exception');
-        $response = NULL;
+        $response = null;
         try {
             // validating the address code in the delete request
             $content = $this->container->get('eat24.utils')
-                ->trimArrayValues(json_decode(trim($request->getContent()), TRUE))
+                ->trimArrayValues(json_decode(trim($request->getContent()), true))
             ;
             $this->container->get('eat24.user_api_validate_service')
                 ->validateDeleteAddressRequest($content)
@@ -418,18 +417,18 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
-     * @Get("/checkDeliveryLocation.{_format}")
-     * @Options("/checkDeliveryLocation.{_format}")
+     * @Get("/users/addresses/check-is-deliverable.{_format}")
+     * @Options("/users/addresses/check-is-deliverable.{_format}")
      * @param Request $request
      * @return array|null
      */
     public function checkDeliveryLocation(Request $request)
     {
         $logger = $this->container->get('monolog.logger.exception');
-        $response = NULL;
+        $response = null;
         try {
             $content = $this->container->get('eat24.utils')
-                ->trimArrayValues(json_decode(trim($request->getContent()), TRUE))
+                ->trimArrayValues(json_decode(trim($request->getContent()), true))
             ;
             $validatedResult = $this->container->get('eat24.user_api_validate_service')
                 ->validateCheckDeliveryLocationRequest($content)

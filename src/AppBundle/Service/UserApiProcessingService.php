@@ -208,6 +208,8 @@ class UserApiProcessingService extends BaseService
 
             $this->entityManager->remove($address);
             $this->entityManager->flush();
+        } catch (BadRequestHttpException $ex) {
+          throw $ex;
         } catch (\Exception $ex) {
             $this->logger->error(__FUNCTION__ . ' Function failed due to Error :' . $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);

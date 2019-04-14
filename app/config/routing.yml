@@ -5,13 +5,13 @@ app:
 eat24_1.0_restaurant:
     resource: "@AppBundle/Controller/API/V10/Restaurant/"
     type:     annotation
-    prefix:   /1.0/eat24/restaurant
+    prefix:   /1.0/
     defaults: {"_format": "json"}
 
 eat24_1.0_user:
     resource: "@AppBundle/Controller/API/V10/User/"
     type:     annotation
-    prefix:   /1.0/eat24/user
+    prefix:   /1.0/
     defaults: {"_format": "json"}
 
 eat24.swagger_ui:

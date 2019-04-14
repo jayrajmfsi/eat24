@@ -64,7 +64,7 @@ class Restaurant
 
     /**
      * @var float
-     * @ORM\Column(type="decimal", precision=2, scale=1)
+     * @ORM\Column(type="decimal", precision=2, scale=1, nullable=true)
      */
     private $rating;
 

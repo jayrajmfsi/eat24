@@ -18,8 +18,8 @@ class RestaurantController extends AbstractFOSRestController
     /**
      * Fetch the restaurants list within a certain location
      *
-     * @Get("/list.{_format}")
-     * @Options("/list.{_format}")
+     * @Get("/restaurants.{_format}")
+     * @Options("/restaurants.{_format}")
      *
      * @param Request $request
      * @return array
@@ -28,7 +28,7 @@ class RestaurantController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             $utils = $this->container->get('eat24.utils');
             $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
@@ -70,8 +70,8 @@ class RestaurantController extends AbstractFOSRestController
     /**
      * Fetch the restaurants list within a certain location
      *
-     * @Post("/menu.{_format}")
-     * @Options("/menu.{_format}")
+     * @Post("/restaurants/menu.{_format}")
+     * @Options("/restaurants/menu.{_format}")
      *
      * @param Request $request
      * @return array
@@ -80,7 +80,7 @@ class RestaurantController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
             $content = json_decode($request->getContent(), true);
             // Validating the request content.

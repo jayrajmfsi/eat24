@@ -331,8 +331,7 @@ class UserApiValidationService extends BaseService
     {
         $validatedResult['status'] = false;
         try {
-            if (empty($requestContent['addressCode'])
-            ) {
+            if (empty($requestContent['addressCode'])) {
                 throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
 
@@ -343,6 +342,7 @@ class UserApiValidationService extends BaseService
             $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $exception->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
         }
+
         return $validatedResult;
     }
 

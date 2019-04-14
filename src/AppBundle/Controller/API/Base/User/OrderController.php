@@ -17,8 +17,8 @@ class OrderController extends AbstractFOSRestController
     /**
      * Create an order for a particular user
      *
-     * @Post("/order.{_format}")
-     * @Options("/order.{_format}")
+     * @Post("/users/orders.{_format}")
+     * @Options("/users/orders.{_format}")
      *
      * @param Request $request
      * @return array
@@ -27,11 +27,11 @@ class OrderController extends AbstractFOSRestController
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
-        $response = NULL;
+        $response = null;
         try {
 
             $utils = $this->container->get('eat24.utils');
-            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
+            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), true));
             // Validating the request content.
             $validationResult = $this->container->get('eat24.user_api_validate_service')
                 ->validateCreateOrderRequest($content)

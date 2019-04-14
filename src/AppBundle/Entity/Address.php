@@ -237,7 +237,7 @@ class Address
      */
     public function beforeSave()
     {
-        $this->token = self::generateUniqueId($this->id);
+        $this->token = static::generateUniqueId($this->id);
     }
 
      /**

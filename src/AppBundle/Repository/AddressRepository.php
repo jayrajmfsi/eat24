@@ -37,7 +37,9 @@ class AddressRepository extends EntityRepository
         $qb = $this->createQueryBuilder('address')
             ->where('address.customerId = :customerId')
             ->andWhere('address.token = :token')
-            ->setParameters(['token' => $addressCode, 'customerId' => $customerId]);
+            ->andWhere('address.addressType = :type')
+            ->setParameters(['token' => $addressCode, 'customerId' => $customerId, 'type' => Address::CUSTOMER_ADDRESS])
+        ;
 
         return $qb->getQuery()->getOneOrNullResult();
     }
