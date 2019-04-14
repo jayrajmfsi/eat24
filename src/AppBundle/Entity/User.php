@@ -19,11 +19,6 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Address", mappedBy="customer")
-     */
-    protected $address;
-
-    /**
      * @ORM\Column(name="phone_number", type="bigint", nullable=true)
      */
     protected $contactNumber;

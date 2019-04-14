@@ -105,20 +105,16 @@ class UserApiValidationService extends BaseService
         return $validateResult;
     }
 
-    public function validateUpdateUserRequest($requestContent, $email)
+    public function validateUpdateUserRequest($requestContent)
     {
         $validateResult['status'] = false;
         try {
-            $userManager = $this->serviceContainer->get('fos_user.user_manager');
             // Checking that all the required keys should be present.
             if (empty($requestContent['UserRequest'])) {
                 throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
 
-            $user = $userManager->findUserBy(['email' => $email]);
-            if (empty($user)) {
-                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_EMAIL);
-            }
+            $user = $this->getCurrentUser();
 
             // validate username
             if (!empty($requestContent['UserRequest']['username'])) {
@@ -316,7 +312,7 @@ class UserApiValidationService extends BaseService
     {
         // Checking if the email is valid.
         if (strlen($email) > 100 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new BadRequestHttpException(ErrorConstants::INVALID_EMAIL);
+            throw new BadRequestHttpException(ErrorConstants::INVALID_EMAIL_FORMAT);
         }
 
         $emailUser = $this->serviceContainer
@@ -337,7 +333,7 @@ class UserApiValidationService extends BaseService
         try {
             if (empty($requestContent['addressCode'])
             ) {
-                throw new BadRequestHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
+                throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
 
             $validatedResult['status'] = true;
@@ -350,7 +346,7 @@ class UserApiValidationService extends BaseService
         return $validatedResult;
     }
 
-    public function validateAddUpdateAddressRequest($requestContent, $emailId, $isUpdate = false)
+    public function validateAddUpdateAddressRequest($requestContent, $isUpdate = false)
     {
         $validateResult['status'] = false;
         try {
@@ -362,19 +358,13 @@ class UserApiValidationService extends BaseService
                     throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
                 }
 
-                $address = $this->entityManager->getRepository('AppBundle:Address')
-                    ->findOneBy(
-                        [
-                            'token' => $requestContent['UserDeliveryAddressRequest']['addressCode'],
-                            'customerId' => ($validateResult['user'])->getId()
-                        ]
+                $address = $this->serviceContainer->get('eat24.utils')
+                    ->validateAddressCode(
+                        $requestContent['UserDeliveryAddressRequest']['addressCode'],
+                        ($validateResult['user'])->getId()
                     )
                 ;
-                if (empty($address)) {
-                    throw new BadRequestHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
-                }
                 $validateResult['address'] = $address;
-                $validateResult['status'] = true;
 
                 return $validateResult;
 
@@ -419,13 +409,10 @@ class UserApiValidationService extends BaseService
             ) {
                 throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
-
-            $restaurant = $this->entityManager->getRepository('AppBundle:Restaurant')
-                ->findOneBy(['reference' => $requestContent['detectLocationRequest']['restaurantCode']])
+            $restaurant = $this->serviceContainer->get('eat24.utils')
+                ->validateRestaurantCode($requestContent['detectLocationRequest']['restaurantCode'])
             ;
-            if (empty($restaurant)) {
-                throw new BadRequestHttpException(ErrorConstants::INVALID_RESTAURANT_CODE);
-            }
+
             $validatedResult['response'] = $restaurant->getId();
             $validatedResult['status'] = true;
         } catch (BadRequestHttpException $ex) {
@@ -435,5 +422,56 @@ class UserApiValidationService extends BaseService
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
         }
         return $validatedResult;
+    }
+
+    public function validateCreateOrderRequest($requestContent)
+    {
+        $validatedResult['status'] = false;
+       try {
+           if (empty($requestContent['orderRequest'])
+               || empty($requestContent['orderRequest']['orderItems'])
+               || empty($requestContent['orderRequest']['restaurantCode'])
+               || empty($requestContent['orderRequest']['addressCode'])
+               || empty($requestContent['orderRequest']['totalPrice'])
+               || !is_array($requestContent['orderRequest']['orderItems'])
+           ) {
+               throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
+           }
+
+           foreach ($requestContent['orderRequest']['orderItems'] as $orderItem) {
+               $this->validateOrderItemsRequest($orderItem);
+           }
+           $restaurant = $this->serviceContainer->get('eat24.utils')
+               ->validateRestaurantCode($requestContent['orderRequest']['restaurantCode'])
+           ;
+           $user = $this->getCurrentUser();
+           $address = $this->serviceContainer->get('eat24.utils')
+               ->validateAddressCode($requestContent['orderRequest']['addressCode'], $user->getId())
+           ;
+           $validatedResult['message']['response'] = [
+               'user' => $user,
+               'address' => $address,
+               'restaurant' => $restaurant
+           ];
+           $validatedResult['status'] = true;
+
+       }  catch (BadRequestHttpException $ex) {
+           throw $ex;
+       } catch (\Exception $exception) {
+           $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $exception->getMessage());
+           throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+       }
+
+       return $validatedResult;
+    }
+
+    public function validateOrderItemsRequest($orderItem)
+    {
+        if (empty($orderItem['name'])
+            || !(int)($orderItem['quantity'])
+            || empty($orderItem['code'])
+        ) {
+            throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
+        }
     }
 }

@@ -33,22 +33,14 @@ class InOrder
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlacedOrder")
      * @ORM\JoinColumn(name="placed_order_id", referencedColumnName="id")
      */
-    private $placedOrderId;
+    private $placedOrder;
 
     /**
-     * @var MenuItem
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\MenuItem")
+     * @var InRestaurant
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\InRestaurant")
      * @ORM\JoinColumn(name="menu_item_id", referencedColumnName="id")
      */
-    private $menuItemId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="itemPrice", type="decimal", precision=12, scale=2)
-     */
-    private $itemPrice;
-
+    private $menuItem;
 
     /**
      * Get id
@@ -85,63 +77,39 @@ class InOrder
     }
 
     /**
-     * Set itemPrice
-     *
-     * @param string $itemPrice
-     *
-     * @return InOrder
-     */
-    public function setItemPrice($itemPrice)
-    {
-        $this->itemPrice = $itemPrice;
-
-        return $this;
-    }
-
-    /**
-     * Get itemPrice
-     *
-     * @return string
-     */
-    public function getItemPrice()
-    {
-        return $this->itemPrice;
-    }
-
-    /**
      * @return PlacedOrder
      */
-    public function getPlacedOrderId()
+    public function getPlacedOrder()
     {
-        return $this->placedOrderId;
+        return $this->placedOrder;
     }
 
     /**
-     * @param PlacedOrder $placedOrderId
+     * @param PlacedOrder $placedOrder
      * @return InOrder
      */
-    public function setPlacedOrderId($placedOrderId)
+    public function setPlacedOrder($placedOrder)
     {
-        $this->placedOrderId = $placedOrderId;
+        $this->placedOrder = $placedOrder;
 
         return $this;
     }
 
     /**
-     * @return MenuItem
+     * @return InRestaurant
      */
-    public function getMenuItemId()
+    public function getMenuItem()
     {
-        return $this->menuItemId;
+        return $this->menuItem;
     }
 
     /**
-     * @param MenuItem $menuItemId
+     * @param InRestaurant $menuItem
      * @return InOrder
      */
-    public function setMenuItemId($menuItemId)
+    public function setMenuItem($menuItem)
     {
-        $this->menuItemId = $menuItemId;
+        $this->menuItem = $menuItem;
 
         return $this;
     }

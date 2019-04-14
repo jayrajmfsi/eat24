@@ -37,8 +37,8 @@ class Comment
 
     /**
      * @var PlacedOrder
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PlacedOrder")
-     * @ORM\JoinColumn(name="placed_order_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\PlacedOrder", mappedBy="comment")
+     *
      */
     private $placedOrderId;
 

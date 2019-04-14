@@ -101,19 +101,6 @@ abstract class BaseService
     }
 
     /**
-     *  Function to generate a new (Most Probably Unique) Transaction Id
-     *  @param int $id
-     *  @return string
-     */
-    public function generateNewTransactionId($id)
-    {
-        $count = strlen((string)$id);
-        $timestamp = round(microtime(true) * 1000) . mt_rand(10, 99) . '';
-
-        return substr($timestamp, $count) . $id;
-    }
-
-    /**
      *  Function to get Current User From Token Storage.
      *
      *  @return User

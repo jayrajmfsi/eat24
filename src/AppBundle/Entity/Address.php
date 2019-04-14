@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="address")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AddressRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Address
 {
@@ -41,14 +42,14 @@ class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="completeAddress", type="text")
+     * @ORM\Column(name="complete_address", type="text")
      */
     private $completeAddress;
 
     /**
      * @var Point
      *
-     * @ORM\Column(name="geoPoint", type="point", nullable=true)
+     * @ORM\Column(name="geo_point", type="point", nullable=true)
      */
     private $geoPoint;
 
@@ -229,5 +230,26 @@ class Address
     public function getToken()
     {
         return $this->token;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function beforeSave()
+    {
+        $this->token = self::generateUniqueId($this->id);
+    }
+
+     /**
+     *  Function to generate a new (Most Probably Unique) Id
+     *  @param int $id
+     *  @return string
+     */
+    public static function generateUniqueId($id)
+    {
+        $count = strlen((string)$id);
+        $timestamp = round(microtime(true) * 1000) . mt_rand(10, 99) . '';
+
+        return substr($timestamp, $count) . $id;
     }
 }

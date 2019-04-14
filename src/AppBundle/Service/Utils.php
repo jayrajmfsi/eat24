@@ -8,7 +8,10 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Constants\ErrorConstants;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class Utils extends BaseService
@@ -138,16 +141,33 @@ class Utils extends BaseService
         return $validateResult;
     }
 
-    /**
-     * Generate Unique ID
-     * @param $id
-     * @return string
-     */
-    public function generateRequestUniqueId($id)
+    public function validateRestaurantCode($reference)
     {
-        $count = strlen((string)$id);
-        $timestamp = round(microtime(true) * 1000) . mt_rand(10, 99) . '';
+        $restaurant = $this->entityManager->getRepository('AppBundle:Restaurant')
+            ->findOneBy(['reference' => $reference])
+        ;
+        if (empty($restaurant)) {
+            throw new BadRequestHttpException(ErrorConstants::INVALID_RESTAURANT_CODE);
+        }
+        return $restaurant;
+    }
 
-        return substr($timestamp, $count) . $id;
+    public function validateAddressCode($addressCode, $userId)
+    {
+        try {
+            $address = $this->entityManager->getRepository('AppBundle:Address')
+                ->getAddress($userId, $addressCode);
+
+            if (!$address) {
+                throw new BadRequestHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
+            }
+
+            return $address;
+        } catch (BadRequestHttpException $exception) {
+            throw $exception;
+        } catch (\Exception $ex) {
+            $this->logger->error(__FUNCTION__ . ' Function failed due to Error :' . $ex->getMessage());
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
     }
 }

@@ -4,6 +4,10 @@ namespace AppBundle\Service;
 
 use AppBundle\Constants\ErrorConstants;
 use AppBundle\Entity\Address;
+use AppBundle\Entity\InOrder;
+use AppBundle\Entity\OrderStatus;
+use AppBundle\Entity\PlacedOrder;
+use AppBundle\Entity\StatusCatalog;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Utils\Point;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -113,19 +117,15 @@ class UserApiProcessingService extends BaseService
     /**
      *  Function to process the GET request for user's Profile.
      *
-     * @param string $email
      * @return array
      */
-    public function processGetUserProfileRequest($email)
+    public function processGetUserProfileRequest()
     {
         $processResult['status'] = false;
         try {
             /** @var User $userDetails */
-            $userDetails = $this->serviceContainer->get('fos_user.user_manager')
-                ->findUserByEmail($email);
-            if (empty($userDetails)) {
-                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_EMAIL);
-            }
+            $userDetails = $this->getCurrentUser();
+
             // Creating ProfileResponse Array.
             $profileResponse['username'] = $userDetails->getUserName();
             $profileResponse['phoneNumber'] = $userDetails->getContactNumber();
@@ -179,8 +179,9 @@ class UserApiProcessingService extends BaseService
             if (!empty($requestContent['latitude']) && !empty($requestContent['longitude'])) {
                 $address->setGeoPoint(new Point($requestContent['latitude'], $requestContent['longitude']));
             }
-            $address->setToken($this->generateNewTransactionId($address->getId()));
+
             $address->setAddressType(Address::CUSTOMER_ADDRESS);
+
             $address->setCustomerId($user->getId());
             $this->entityManager->persist($address);
             $this->entityManager->flush();
@@ -200,16 +201,13 @@ class UserApiProcessingService extends BaseService
     {
         try {
             $userId = $this->getCurrentUser()->getId();
-            $address = $this->entityManager->getRepository('AppBundle:Address')
-                ->getAddress($userId, $content['addressCode']);
-            if ($address) {
-                $this->entityManager->remove($address);
-                $this->entityManager->flush();
-            } else {
-                throw new BadRequestHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
-            }
-        } catch (BadRequestHttpException $exception) {
-            throw $exception;
+
+            $address = $this->serviceContainer->get('eat24.utils')
+                ->validateAddressCode($content['addressCode'], $userId)
+            ;
+
+            $this->entityManager->remove($address);
+            $this->entityManager->flush();
         } catch (\Exception $ex) {
             $this->logger->error(__FUNCTION__ . ' Function failed due to Error :' . $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
@@ -255,6 +253,47 @@ class UserApiProcessingService extends BaseService
             if ($address) {
                 $processResult['status'] = true;
             }
+        } catch (\Exception $ex) {
+            $this->logger->error(__FUNCTION__ . ' function failed due to Error :' . $ex->getMessage());
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $processResult;
+    }
+
+    public function processCreateOrderRequest($orderDetails, $content)
+    {
+        $processResult['status'] = false;
+        try {
+            $order = new PlacedOrder();
+            $order->setRestaurant($orderDetails['restaurant']);
+            $order->setUser($orderDetails['user']);
+            $order->setAddress($orderDetails['address']);
+            $order->setFinalPrice($content['totalPrice']);
+
+            $this->entityManager->persist($order);
+
+            foreach ($content['orderItems'] as $orderItem) {
+                $inOrder = new InOrder();
+
+                $menuItem = $this->entityManager->getRepository('AppBundle:InRestaurant')
+                    ->findOneBy(['itemReference' => $orderItem['code']])
+                ;
+                if (!$menuItem) {
+                    throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_MENU_ITEM_CODE);
+                }
+
+                $inOrder->setQuantity($orderItem['quantity']);
+                $inOrder->setPlacedOrder($order);
+                $inOrder->setMenuItem($menuItem);
+
+                $this->entityManager->persist($inOrder);
+            }
+
+            $this->entityManager->flush();
+
+            $processResult['ref'] = $order->getOrderReference();
+            $processResult['status'] = true;
         } catch (\Exception $ex) {
             $this->logger->error(__FUNCTION__ . ' function failed due to Error :' . $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);

@@ -193,7 +193,7 @@ class ProfileController extends AbstractFOSRestController
             // Validating the request content.
             $validateResult = $this->container
                 ->get('eat24.user_api_validate_service')
-                ->validateUpdateUserRequest($content, $request->attributes->get('emailId'))
+                ->validateUpdateUserRequest($content)
             ;
             $user = $validateResult['message']['response']['user'];
 
@@ -245,7 +245,7 @@ class ProfileController extends AbstractFOSRestController
             // Processing the request and creating the final streamed response to be sent in response.
             $profileResult = $this->container
                 ->get('eat24.user_api_processing_service')
-                ->processGetUserProfileRequest($request->attributes->get('emailId'))
+                ->processGetUserProfileRequest()
             ;
             $user = $profileResult['message']['response']['profileDetails'];
             // Creating final response Array to be released from API Controller.
@@ -300,7 +300,7 @@ class ProfileController extends AbstractFOSRestController
             // Validating the request content.
             $validatedResult = $this->container
                 ->get('eat24.user_api_validate_service')
-                ->validateAddUpdateAddressRequest($content, $request->attributes->get('emailId'), $isUpdate)
+                ->validateAddUpdateAddressRequest($content, $isUpdate)
             ;
             $address = $validatedResult['address'] ? $validatedResult['address'] : null;
             // Processing Request Content and Getting Result.

@@ -44,13 +44,6 @@ class PlacedOrder
     private $restaurant;
 
     /**
-     * @var Address
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Address")
-     * @ORM\JoinColumn(name="address_id", referencedColumnName="id")
-     */
-    private $address;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="estimatedDeliveryTime", type="datetime", nullable=true)
@@ -317,47 +310,5 @@ class PlacedOrder
     {
         $this->restaurant = $restaurant;
     }
-
-    /**
-     * Set orderReference
-     *
-     * @param integer $orderReference
-     *
-     * @return PlacedOrder
-     */
-    public function setOrderReference($orderReference)
-    {
-        $this->orderReference = $orderReference;
-
-        return $this;
-    }
-
-    /**
-     * Get orderReference
-     *
-     * @return integer
-     */
-    public function getOrderReference()
-    {
-        return $this->orderReference;
-    }
-
-    /**
-     * @param Address $address
-     * @return PlacedOrder
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    /**
-     * @return Address
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
 }
+

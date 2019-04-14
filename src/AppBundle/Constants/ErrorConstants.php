@@ -23,7 +23,7 @@ final class ErrorConstants
     const INVALID_RESTAURANT_CODE = 'INVALIDRESTAURANTCODE';
     const GATEWAY_TIMEOUT = 'GATEWAYTIMEOUT';
     const INVALID_PHONE_NUMBER = 'INVALIDPHONENO';
-    const INVALID_EMAIL = 'INVALIDEMAIL';
+    const INVALID_EMAIL_FORMAT = 'INVALIDEMAILFORMAT';
     const INVALID_USERNAME = 'INVALIDUSERNAME';
     const INVALID_CRED = 'INVALIDCRED';
     const INVALID_AUTH_TOKEN = 'INVALIDAUTHTOKEN';
@@ -32,7 +32,7 @@ final class ErrorConstants
     const PHONE_NUMBER_EXISTS = 'PHONENUMBEREXIST';
     const EMAIL_EXISTS = 'EMAILPREEXISTS';
     const INVALID_GEO_POINT = 'INVALIDGEOPOINT';
-    const INVLAID_RESTAURANT_CODE = 'INVALID_RESTAURANT_CODE';
+    const INVALID_MENU_ITEM_CODE = 'INVALID_RESTAURANT_CODE';
     const INVALID_REFRESH_TOKEN = 'INVALIDREFRESHTOKEN';
     const EXPIRED_REFRESH_TOKEN = 'EXPIREDREFRESHTOKEN';
     const INVALID_OLDPASS = 'INVALIDOLDPASS';
@@ -48,26 +48,26 @@ final class ErrorConstants
         self::SERVICE_UNAVAIL => ['code' => '503', 'message' => 'api.response.error.service_unavailable'],
         self::GATEWAY_TIMEOUT => ['code' => '504', 'message' => 'api.response.error.gateway_timeout'],
         self::INVALID_AUTHENTICATION => ['code' => '1001', 'message' => 'api.response.error.invalid_auth_fields'],
-        self::INVALID_REQ_DATA => ['code' => '1003', 'message' => 'api.response.error.invalid_request_data'],
-        self::INVALID_ADDRESS_CODE => ['code' => '1004', 'message' => 'api.response.error.invalid_address_code'],
-        self::INVALID_RESTAURANT_CODE => ['code' => '1006', 'message' => 'api.response.error.invalid_restaurant_code'],
-        self::INVALID_CONTENT_TYPE => ['code' => '1008', 'message' => 'api.response.error.invalid_content_type'],
-        self::INVALID_CONTENT_LENGTH => ['code' => '1009', 'message' => 'api.response.error.invalid_content_length'],
-        self::PHONE_NUMBER_EXISTS => ['code' => '1014', 'message' => 'api.response.error.phone_number_exists'],
-        self::INVLAID_RESTAURANT_CODE => ['code' => '1016', 'message' => 'api.response.error.invalid_restaurant_code'],
-        self::INVALID_GEO_POINT => ['code' => '1017', 'message' => 'api.response.error.invalid_geo_point'],
-        self::INVALID_PHONE_NUMBER => ['code' => '1018', 'message' => 'api.response.error.invalid_phone_number'],
-        self::INVALID_EMAIL => ['code' => '1024', 'message' => 'api.response.error.invalid_email'],
-        self::INVALID_USERNAME => ['code' => '1034', 'message' => 'api.response.error.invalid_username'],
-        self::INVALID_CRED => ['code' => '1035', 'message' => 'api.response.error.invalid_credentials'],
-        self::INVALID_AUTH_TOKEN => ['code' => '1036', 'message' => 'api.response.error.invalid_auth_token'],
-        self::TOKEN_EXPIRED => ['code' => '1037', 'message' => 'api.response.error.auth_token_expired'],
-        self::USERNAME_EXISTS => ['code' => '1040', 'message' => 'api.response.error.username_exists'],
-        self::EMAIL_EXISTS => ['code' => '1041', 'message' => 'api.response.error.email_exists'],
-        self::INVALID_REFRESH_TOKEN => ['code' => '1042', 'message' => 'api.response.error.invalid_refresh_token'],
-        self::EXPIRED_REFRESH_TOKEN => ['code' => '1043', 'message' => 'api.response.error.expired_refresh_token'],
-        self::INVALID_OLDPASS => ['code' => '1044', 'message' => 'api.response.error.invalid_old_pass'],
-        self::INVALID_NEWPASSFORMAT => ['code' => '1045', 'message' => 'api.response.error.invalid_newpass_format'],
-        self::DISABLEDUSER => ['code' => '1046', 'message' => 'api.response.error.disabled_user'],
+        self::INVALID_REQ_DATA => ['code' => '1002', 'message' => 'api.response.error.invalid_request_data'],
+        self::INVALID_ADDRESS_CODE => ['code' => '1003', 'message' => 'api.response.error.invalid_address_code'],
+        self::INVALID_RESTAURANT_CODE => ['code' => '1004', 'message' => 'api.response.error.invalid_restaurant_code'],
+        self::INVALID_CONTENT_TYPE => ['code' => '1005', 'message' => 'api.response.error.invalid_content_type'],
+        self::INVALID_CONTENT_LENGTH => ['code' => '1006', 'message' => 'api.response.error.invalid_content_length'],
+        self::PHONE_NUMBER_EXISTS => ['code' => '1007', 'message' => 'api.response.error.phone_number_exists'],
+        self::INVALID_MENU_ITEM_CODE => ['code' => '1008', 'message' => 'api.response.error.invalid_menu_item_code'],
+        self::INVALID_GEO_POINT => ['code' => '1009', 'message' => 'api.response.error.invalid_geo_point'],
+        self::INVALID_PHONE_NUMBER => ['code' => '1010', 'message' => 'api.response.error.invalid_phone_number'],
+        self::INVALID_EMAIL_FORMAT => ['code' => '1012', 'message' => 'api.response.error.invalid_email_data'],
+        self::INVALID_USERNAME => ['code' => '1013', 'message' => 'api.response.error.invalid_username'],
+        self::INVALID_CRED => ['code' => '1014', 'message' => 'api.response.error.invalid_credentials'],
+        self::INVALID_AUTH_TOKEN => ['code' => '1015', 'message' => 'api.response.error.invalid_auth_token'],
+        self::TOKEN_EXPIRED => ['code' => '1016', 'message' => 'api.response.error.auth_token_expired'],
+        self::USERNAME_EXISTS => ['code' => '1017', 'message' => 'api.response.error.username_exists'],
+        self::EMAIL_EXISTS => ['code' => '1018', 'message' => 'api.response.error.email_exists'],
+        self::INVALID_REFRESH_TOKEN => ['code' => '1021', 'message' => 'api.response.error.invalid_refresh_token'],
+        self::EXPIRED_REFRESH_TOKEN => ['code' => '1022', 'message' => 'api.response.error.expired_refresh_token'],
+        self::INVALID_OLDPASS => ['code' => '1018', 'message' => 'api.response.error.invalid_old_pass'],
+        self::INVALID_NEWPASSFORMAT => ['code' => '1019', 'message' => 'api.response.error.invalid_newpass_format'],
+        self::DISABLEDUSER => ['code' => '1020', 'message' => 'api.response.error.disabled_user'],
     ];
 }

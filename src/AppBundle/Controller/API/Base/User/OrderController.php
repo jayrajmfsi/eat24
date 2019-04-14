@@ -15,34 +15,39 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class OrderController extends AbstractFOSRestController
 {
     /**
-     * Fetch the restaurants list within a certain location
+     * Create an order for a particular user
      *
-     * @Post("/create.{_format}")
-     * @Options("/create.{_format}")
+     * @Post("/order.{_format}")
+     * @Options("/order.{_format}")
      *
      * @param Request $request
      * @return array
      */
-    public function createUserOrder(Request $request)
+    public function createOrder(Request $request)
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
         $response = NULL;
         try {
+
             $utils = $this->container->get('eat24.utils');
             $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
             // Validating the request content.
-            $validationResult = $this->container->get('eat24.restaurant_api_validate_service')
+            $validationResult = $this->container->get('eat24.user_api_validate_service')
                 ->validateCreateOrderRequest($content)
             ;
 
             $result = $this->container->get('eat24.user_api_processing_service')
-                ->processCreateOrderRequest($validationResult)
+                ->processCreateOrderRequest($validationResult['message']['response'], $content['orderRequest'])
             ;
             // Creating final response Array to be released from API Controller.
             $response = $this->container->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('OrderDetailsResponse', $result['data']);
-            ;
+                ->createUserApiSuccessResponse(
+                    'OrderDetailsResponse', [
+                        'status' => $this->container->get('translator')->trans('api.response.success.order_booked'),
+                        'transactionId' => $result['ref']
+                ]
+            );
         } catch (AccessDeniedHttpException $ex) {
             throw $ex;
         } catch (BadRequestHttpException $ex) {

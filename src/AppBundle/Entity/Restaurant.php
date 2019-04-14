@@ -180,7 +180,7 @@ class Restaurant
     public function beforeSave()
     {
         $this->createdDateTime = new \DateTime();
-        $this->reference = round(microtime(true) * 1000) . mt_rand(100, 999) . '';
+        $this->reference = Address::generateUniqueId($this->id);
     }
 
     /**

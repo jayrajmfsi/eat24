@@ -17,3 +17,6 @@
 /web/bundles/
 .idea/*
 /web/images/*
+/.sonar/
+sonar-project.properties
+.scannerwork/

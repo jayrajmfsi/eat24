@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="in_restaurant")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\InRestaurantRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class InRestaurant
 {
@@ -41,6 +42,12 @@ class InRestaurant
 
     /**
      * @var string
+     * @ORM\Column(name="item_reference", type="string", nullable=true)
+     */
+    private $itemReference;
+
+    /**
+     * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
@@ -60,6 +67,10 @@ class InRestaurant
      */
     private $restaurant;
 
+    public function beforeSave()
+    {
+        $this->itemReference = Address::generateUniqueId($this->id);
+    }
     /**
      * Get id
      *
@@ -188,5 +199,21 @@ class InRestaurant
     public function getRestaurant()
     {
         return $this->restaurant;
+    }
+
+    /**
+     * @return string
+     */
+    public function getItemReference()
+    {
+        return $this->itemReference;
+    }
+
+    /**
+     * @param string $itemReference
+     */
+    public function setItemReference($itemReference)
+    {
+        $this->itemReference = $itemReference;
     }
 }

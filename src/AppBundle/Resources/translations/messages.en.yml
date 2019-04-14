@@ -28,10 +28,12 @@ api:
       invalid_geo_point: "Invalid Geo location point found in request content"
       invalid_restaurant_code: "Invalid Restaurant Code found in request content"
       invalid_phone_number: "Invalid Phone number found in request content."
-      invalid_email: "Invalid Email length found in request content."
+      invalid_email: "No User is not associated with this email"
+      invalid_email_data: "Invalid Email format found in request content."
       invalid_username: "Invalid username provided in request."
       invalid_auth_token: "Invalid Access Token provided in request auth header."
       auth_token_expired: "Access Token provided in request has been expired."
+      invalid_menu_item_code: "Invalid menu item code provided in the order Request"
       username_exists: "Username provided in request is taken by someone else, please try with another username."
       email_exists: "Email provided in request is already linked to someone else's Account,
               please try with another email."
@@ -51,5 +53,6 @@ api:
       address_deleted: Address was deleted succesfully.
       location_deliverable: The Address is deliverable
       location_not_deliverable: Sorry. The Address is not deliverable. Please try with another address
+      order_booked: Order Booked successfully.
     failure:
       message: failure
