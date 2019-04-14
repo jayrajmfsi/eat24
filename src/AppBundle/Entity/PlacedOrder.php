@@ -56,12 +56,6 @@ class PlacedOrder
      */
     private $actualDeliveryTime;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="deliveryAddress", type="string", length=255)
-     */
-    private $deliveryAddress;
 
     /**
      * @var string
@@ -171,30 +165,6 @@ class PlacedOrder
     public function getActualDeliveryTime()
     {
         return $this->actualDeliveryTime;
-    }
-
-    /**
-     * Set deliveryAddress
-     *
-     * @param string $deliveryAddress
-     *
-     * @return PlacedOrder
-     */
-    public function setDeliveryAddress($deliveryAddress)
-    {
-        $this->deliveryAddress = $deliveryAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get deliveryAddress
-     *
-     * @return string
-     */
-    public function getDeliveryAddress()
-    {
-        return $this->deliveryAddress;
     }
 
     /**

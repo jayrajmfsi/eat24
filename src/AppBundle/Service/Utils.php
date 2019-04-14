@@ -3,7 +3,7 @@
  *  Service Class for providing functions other than APIs main processing Logic to other Application Services.
  *
  *  @category Service
- *  @author Ashish Kumar<ashish.k@mindfiresolutions.com>
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
  */
 
 namespace AppBundle\Service;

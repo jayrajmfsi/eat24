@@ -33,12 +33,15 @@ class OrderController extends AbstractFOSRestController
             $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
             // Validating the request content.
             $validationResult = $this->container->get('eat24.restaurant_api_validate_service')
-                ->validateFilterRestaurantRequest($content)
+                ->validateCreateOrderRequest($content)
             ;
 
+            $result = $this->container->get('eat24.user_api_processing_service')
+                ->processCreateOrderRequest($validationResult)
+            ;
             // Creating final response Array to be released from API Controller.
             $response = $this->container->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('RestaurantDetailsResponse', $result['data']);
+                ->createUserApiSuccessResponse('OrderDetailsResponse', $result['data']);
             ;
         } catch (AccessDeniedHttpException $ex) {
             throw $ex;

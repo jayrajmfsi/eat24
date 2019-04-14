@@ -2,10 +2,9 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Address;
 use AppBundle\Entity\Utils\Point;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\EntityRepository;
-use AppBundle\Entity\Utils\PointType;
 
 /**
  * AddressRepository
@@ -15,4 +14,50 @@ use AppBundle\Entity\Utils\PointType;
  */
 class AddressRepository extends EntityRepository
 {
+    public function listUserAddress($customerId)
+    {
+        $qb = $this->createQueryBuilder('address')
+            ->select('address.completeAddress')
+            ->addSelect('address.mapLocation as location')
+            ->addSelect('address.token as addressCode')
+            ->addSelect('address.nickName')
+            ->where('address.customerId = :customerId')
+            ->andWhere('address.addressType = :addressType')
+            ->setParameters([
+                'customerId' => $customerId,
+                'addressType' => Address::CUSTOMER_ADDRESS
+            ])
+        ;
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getAddress($customerId, $addressCode)
+    {
+        $qb = $this->createQueryBuilder('address')
+            ->where('address.customerId = :customerId')
+            ->andWhere('address.token = :token')
+            ->setParameters(['token' => $addressCode, 'customerId' => $customerId]);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function checkDeliveryLocation($longitude, $latitude, $restaurantId, $range)
+    {
+        $geoPoint = new Point($latitude, $longitude);
+
+        $qb = $this->createQueryBuilder('address')
+            ->where('address.customerId = :restaurantId')
+            ->andWhere('address.addressType = :type')
+            ->andWhere('ST_DISTANCE_SPHERE(address.geoPoint, POINT_STR(:point)) / 1000 <='. $range)
+            ->setParameters([
+                'restaurantId' => $restaurantId,
+                'type' => Address::RESTAURANT_ADDRESS,
+                'point' => $geoPoint
+            ])
+        ;
+
+        return $qb->getQuery()->getArrayResult();
+    }
 }
+

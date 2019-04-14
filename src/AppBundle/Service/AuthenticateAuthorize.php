@@ -94,51 +94,6 @@ class AuthenticateAuthorize extends BaseService
     }
 
     /**
-     *  Function to Authorize Request.
-     *
-     *  @param Request $request
-     *
-     *  @return array
-     */
-    public function authorizeRequest($request)
-    {
-        $authorizeResult['status'] = false;
-        try {
-
-            $route = $this->serviceContainer
-                ->get('router')->getRouteCollection()->get($request->attributes->get('_route'))
-            ;
-
-            $entityName = $route->getOption('resource');
-            $authorizeResult['status'] = $this->checkTokenResourceAuthorization(
-                $route->getOption('operation'),
-                $entityName
-            );
-        } catch (\Exception $ex) {
-            $this->logger->error('Authorization Could not be done Due to Error : '.
-                $ex->getMessage());
-            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
-        }
-        return $authorizeResult;
-    }
-
-    /**
-     *  Function to check if Token User is Authorized for a certain API Operation OR Not.
-     *
-     *  @param $operation
-     *  @param $resourceName
-     *
-     *  @return boolean
-     */
-    public function checkTokenResourceAuthorization($operation, $resourceName)
-    {
-        $securityAuthChecker = $this->serviceContainer->get('security.authorization_checker');
-
-        //Checking if User is Authorize to perform this Operation OR Not.
-        return $securityAuthChecker->isGranted($operation, $resourceName);
-    }
-
-    /**
      *  Function to return User Object from email input.
      *
      *  @param string $email

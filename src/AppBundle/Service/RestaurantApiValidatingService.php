@@ -50,6 +50,7 @@ class RestaurantApiValidatingService extends BaseService
                 ];
             }
 
+
             $validateResult['status'] = true;
         } catch (BadRequestHttpException $ex) {
             throw $ex;
@@ -118,10 +119,5 @@ class RestaurantApiValidatingService extends BaseService
         }
 
         return $validateResult;
-    }
-
-    public function validateCreateOrderRequest()
-    {
-
     }
 }

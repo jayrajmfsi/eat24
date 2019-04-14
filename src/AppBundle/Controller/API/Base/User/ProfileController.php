@@ -6,6 +6,8 @@ use AppBundle\Constants\ErrorConstants;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Options;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -171,7 +173,6 @@ class ProfileController extends AbstractFOSRestController
         return $response;
     }
 
-
     /**
      * @Post("/update.{_format}")
      * @Options("/update.{_format}")
@@ -230,7 +231,7 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
-     * @Post("/profile.{_format}")
+     * @Get("/profile.{_format}")
      * @Options("/profile.{_format}")
      * @param Request $request
      * @return array
@@ -242,17 +243,19 @@ class ProfileController extends AbstractFOSRestController
         $response = NULL;
         try {
             // Processing the request and creating the final streamed response to be sent in response.
-            $profileResut = $this->container
+            $profileResult = $this->container
                 ->get('eat24.user_api_processing_service')
                 ->processGetUserProfileRequest($request->attributes->get('emailId'))
             ;
-
+            $user = $profileResult['message']['response']['profileDetails'];
             // Creating final response Array to be released from API Controller.
             $response = $this->container
                 ->get('eat24.api_response_service')
-                ->getUserApiSuccessResponse(
-                    'UserResponse',
-                    $profileResut['message']['response']['profileDetails']
+                ->createUserApiSuccessResponse(
+                    'UserResponse', [
+                        'phoneNumber' => $user['phoneNumber'],
+                        'username' => $user['username']
+                    ]
                 )
             ;
         } catch (AccessDeniedHttpException $ex) {
@@ -278,7 +281,7 @@ class ProfileController extends AbstractFOSRestController
      *
      * @Post("/address.{_format}")
      * @Put("/address.{_format}")
-     * @Options("/oauth.{_format}")
+     * @Options("/address.{_format}")
      * @param Request $request
      *
      *  @return array
@@ -316,6 +319,133 @@ class ProfileController extends AbstractFOSRestController
                     'status' => $this->container->get('translator.default')->trans($transMessageKey),
                     'addressCode' => $result['addressCode']
                 ])
+            ;
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
+        } catch (HttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $logger->error(__FUNCTION__.' function failed due to Error : '.
+                $ex->getMessage());
+            // Throwing Internal Server Error Response In case of Unknown Errors.
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $response;
+    }
+
+    /**
+     * To get address list of user
+     *
+     * @Get("/address.{_format}")
+     * @Options("/address.{_format}")
+     * @param Request $request
+     *
+     *  @return array
+     **/
+    public function viewUserAddressList(Request $request)
+    {
+        $logger = $this->container->get('monolog.logger.exception');
+        // $response to be returned from API.
+        $response = NULL;
+        try {
+            // Processing email id and getting response.
+            $result = $this->container->get('eat24.user_api_processing_service')->processListAddressRequest();
+
+            // Creating and final array of response from API.
+            $response = $this->container
+                ->get('eat24.api_response_service')
+                ->createUserApiSuccessResponse('AddressListResponse', $result['message']['response'])
+            ;
+
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
+        } catch (HttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $logger->error(__FUNCTION__.' function failed due to Error : '.
+                $ex->getMessage());
+            // Throwing Internal Server Error Response In case of Unknown Errors.
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @Delete("/address.{_format}")
+     * @Options("/address.{_format}")
+     * @param Request $request
+     * @return array|null
+     */
+    public function deleteAddress(Request $request)
+    {
+        $logger = $this->container->get('monolog.logger.exception');
+        $response = NULL;
+        try {
+            // validating the address code in the delete request
+            $content = $this->container->get('eat24.utils')
+                ->trimArrayValues(json_decode(trim($request->getContent()), TRUE))
+            ;
+            $this->container->get('eat24.user_api_validate_service')
+                ->validateDeleteAddressRequest($content)
+            ;
+            $this->container->get('eat24.user_api_processing_service')
+                ->processDeleteAddressRequest($content)
+            ;
+            $response = $this->container->get('eat24.api_response_service')
+                ->createUserApiSuccessResponse('DeleteAddressResponse', [
+                    'status' => $this->container->get('translator')->trans('api.response.success.address_deleted')
+                ]);
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
+        } catch (HttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $logger->error(__FUNCTION__.' function failed due to Error : '.
+                $ex->getMessage());
+            // Throwing Internal Server Error Response In case of Unknown Errors.
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @Get("/checkDeliveryLocation.{_format}")
+     * @Options("/checkDeliveryLocation.{_format}")
+     * @param Request $request
+     * @return array|null
+     */
+    public function checkDeliveryLocation(Request $request)
+    {
+        $logger = $this->container->get('monolog.logger.exception');
+        $response = NULL;
+        try {
+            $content = $this->container->get('eat24.utils')
+                ->trimArrayValues(json_decode(trim($request->getContent()), TRUE))
+            ;
+            $validatedResult = $this->container->get('eat24.user_api_validate_service')
+                ->validateCheckDeliveryLocationRequest($content)
+            ;
+            $result = $this->container->get('eat24.user_api_processing_service')
+                ->processCheckDeliveryLocationRequest($validatedResult['response'], $content['detectLocationRequest'])
+            ;
+            $translationKey = $result['status'] ? 'api.response.success.location_deliverable'
+                :  'api.response.success.location_not_deliverable'
+            ;
+            $response = $this->container->get('eat24.api_response_service')
+                ->createUserApiSuccessResponse('detectLocationResponse',[
+                        'status' =>  $this->container->get('translator')->trans($translationKey),
+                        'isDeliverable' => $result['status']
+                    ]
+                )
             ;
         } catch (BadRequestHttpException $ex) {
             throw $ex;

@@ -77,7 +77,6 @@ class RequestListener extends BaseService
             && !strpos($request->getPathInfo(), '/restaurant/menu')
         ) {
             $authResult = $authService->authenticateApiRequest($request);
-
             $request->attributes->set('emailId', $authResult['message']['emailId']);
         }
 
@@ -95,7 +94,7 @@ class RequestListener extends BaseService
     {
         $content = $request->getContent();
 
-        if ($request->isMethod('GET') && empty($content)) {
+        if (($request->isMethod('GET') || $request->isMethod('DELETE')) && empty($content)) {
             $content = base64_decode($request->get('data'));
             $request->initialize($request->query->all(), array(), $request->attributes->all(),
                 $request->cookies->all(), array(), $request->server->all(), $content);

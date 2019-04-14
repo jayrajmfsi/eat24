@@ -25,10 +25,7 @@ class ExceptionListener extends BaseService
         $status = method_exists($event->getException(), 'getStatusCode')
             ? $event->getException()->getStatusCode()
             : 500;
-
-        $transactionId = null;
         $exceptionMessage = $event->getException()->getMessage();
-
         if (!is_array($exceptionMessage) && !in_array($exceptionMessage, array_keys(ErrorConstants::$errorCodeMap))) {
             // Log the Exception Not thrown from controllers because other have been logged Already in controllers.
             $this->logger->error("Error",
@@ -39,10 +36,8 @@ class ExceptionListener extends BaseService
             );
 
         } elseif (is_array($exceptionMessage)) {
-            $transactionId = $exceptionMessage['transactionId'];
             $exceptionMessage = $exceptionMessage['error'];
         }
-
         switch ($status) {
             case 400:
                 $messageKey = $exceptionMessage;
@@ -87,7 +82,7 @@ class ExceptionListener extends BaseService
 
         $responseService = $this->serviceContainer->get('eat24.api_response_service');
         // Creating Http Error response.
-        $result = $responseService->createApiErrorResponse($messageKey, $transactionId);
+        $result = $responseService->createApiErrorResponse($messageKey);
         $response = new JsonResponse($result, $status);
         // Logging Exception in Exception log.
         $this->logger->error('Eat24 Exception :', [

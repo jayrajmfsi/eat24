@@ -29,6 +29,13 @@ class OrderStatus
     private $ts;
 
     /**
+     * @var PlacedOrder
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\PlacedOrder")
+     * @ORM\JoinColumn(name="placed_order_id", referencedColumnName="id")
+     */
+    private $orderId;
+
+    /**
      * @var StatusCatalog
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\StatusCatalog",)
      * @ORM\JoinColumn(name="status_catalog_id", referencedColumnName="id")

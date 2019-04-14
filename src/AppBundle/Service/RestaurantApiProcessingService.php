@@ -21,12 +21,12 @@ class RestaurantApiProcessingService extends BaseService
                 ? $this->serviceContainer->getParameter('restaurant_range')
                 : null
             ;
-            $total = $restaurantRepo->countUserRecords($filter, $sort, $rangeForRestaurant);
+            $total = $restaurantRepo->countUserRecords($rangeForRestaurant, $filter, $sort);
             $restaurantListObj = $restaurantRepo->fetchRestaurantListData(
+                $rangeForRestaurant,
                 $filter,
                 $sort,
-                $content['pagination'],
-                $rangeForRestaurant
+                $content['pagination']
             );
             $host = $this->serviceContainer->get('request_stack')->getCurrentRequest()->getHost();
             $imgDir = $this->serviceContainer->getParameter('image_dir');

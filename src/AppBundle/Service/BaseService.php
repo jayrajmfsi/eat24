@@ -102,18 +102,15 @@ abstract class BaseService
 
     /**
      *  Function to generate a new (Most Probably Unique) Transaction Id
-     *  for creating slug fields.
-     *
-     *  @param boolean $createHash(default = true)
-     *
+     *  @param int $id
      *  @return string
      */
-    public function generateNewTransactionId($createHash = true)
+    public function generateNewTransactionId($id)
     {
-        $currentTime = explode(" ", microtime());
-        $transactionId = substr($currentTime[0], 2, 8) . $currentTime[1];
-        $transactionId = $transactionId . rand(0, 100) . rand(20, 787);
-        return (true === $createHash) ? sha1($transactionId) : (string)$transactionId;
+        $count = strlen((string)$id);
+        $timestamp = round(microtime(true) * 1000) . mt_rand(10, 99) . '';
+
+        return substr($timestamp, $count) . $id;
     }
 
     /**

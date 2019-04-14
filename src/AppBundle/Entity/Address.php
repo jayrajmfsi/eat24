@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="address")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AddressRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class Address
 {
@@ -104,13 +103,6 @@ class Address
         return $this->completeAddress;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
-    public function beforeSave()
-    {
-        $this->token = round(microtime(true) * 1000) . mt_rand(100, 999) . '';
-    }
     /**
      * Set geoPoint
      *

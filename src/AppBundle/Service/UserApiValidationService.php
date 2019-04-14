@@ -252,54 +252,6 @@ class UserApiValidationService extends BaseService
     }
 
     /**
-     *  Function to validate the get User's Profile API.
-     *
-     *  @param array $requestContent
-     *
-     *  @return array
-     */
-    public function validateFetchUserProfileRequest($requestContent)
-    {
-        $validateResult['status'] = false;
-        try {
-            // Checking if username is not present in the request
-            // then marking validation status true.
-            if (empty($requestContent['UserRequest']['username'])) {
-                $validateResult['status'] = true;
-
-                return $validateResult;
-            }
-
-            // Validating the Username present in request
-            $user = $this->serviceContainer
-                ->get('eat24.authenticate_authorize_service')
-                ->getUser($requestContent['UserRequest']['emailId'])
-            ;
-
-            // Checking if the username provided is valid or Not.
-            if (empty($user)) {
-                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_USERNAME);
-            }
-
-            $validateResult['message']['response'] = [
-                'user' => $user,
-            ];
-            $validateResult['status'] = true;
-        } catch (AccessDeniedHttpException $ex) {
-            throw $ex;
-        } catch (BadRequestHttpException $ex) {
-            throw $ex;
-        } catch (UnprocessableEntityHttpException $ex) {
-            throw $ex;
-        } catch (\Exception $ex) {
-            $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
-            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
-        }
-
-        return $validateResult;
-    }
-
-    /**
      *  Function to validate UserName While Updating OR Creating Object.
      *
      *  @param string $userName
@@ -379,14 +331,30 @@ class UserApiValidationService extends BaseService
         return $emailUser;
     }
 
+    public function validateDeleteAddressRequest($requestContent)
+    {
+        $validatedResult['status'] = false;
+        try {
+            if (empty($requestContent['addressCode'])
+            ) {
+                throw new BadRequestHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
+            }
+
+            $validatedResult['status'] = true;
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (\Exception $exception) {
+            $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $exception->getMessage());
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+        return $validatedResult;
+    }
 
     public function validateAddUpdateAddressRequest($requestContent, $emailId, $isUpdate = false)
     {
         $validateResult['status'] = false;
         try {
-            $validateResult['user'] = $this->serviceContainer
-                ->get('eat24.authenticate_authorize_service')->getUser($emailId)
-            ;
+            $validateResult['user'] = $this->getCurrentUser();
             if ($isUpdate) {
                 if (empty($requestContent['UserDeliveryAddressRequest'])
                     || empty($requestContent['UserDeliveryAddressRequest']['addressCode'])
@@ -407,7 +375,9 @@ class UserApiValidationService extends BaseService
                 }
                 $validateResult['address'] = $address;
                 $validateResult['status'] = true;
+
                 return $validateResult;
+
             } else {
                 // checking for add address request
                 if (empty($requestContent['UserDeliveryAddressRequest'])
@@ -427,7 +397,6 @@ class UserApiValidationService extends BaseService
                 }
             }
 
-
             $validateResult['status'] = true;
         } catch (BadRequestHttpException $ex) {
             throw $ex;
@@ -437,5 +406,34 @@ class UserApiValidationService extends BaseService
         }
 
         return $validateResult;
+    }
+
+    public function validateCheckDeliveryLocationRequest($requestContent)
+    {
+        $validatedResult['status'] = false;
+        try {
+            if (empty($requestContent['detectLocationRequest'])
+                || empty($requestContent['detectLocationRequest']['longitude'])
+                || empty($requestContent['detectLocationRequest']['latitude'])
+                || empty($requestContent['detectLocationRequest']['restaurantCode'])
+            ) {
+                throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
+            }
+
+            $restaurant = $this->entityManager->getRepository('AppBundle:Restaurant')
+                ->findOneBy(['reference' => $requestContent['detectLocationRequest']['restaurantCode']])
+            ;
+            if (empty($restaurant)) {
+                throw new BadRequestHttpException(ErrorConstants::INVALID_RESTAURANT_CODE);
+            }
+            $validatedResult['response'] = $restaurant->getId();
+            $validatedResult['status'] = true;
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (\Exception $exception) {
+            $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $exception->getMessage());
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+        return $validatedResult;
     }
 }
