@@ -6,6 +6,7 @@ use AppBundle\Constants\ErrorConstants;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Options;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -14,6 +15,14 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OrderController extends AbstractFOSRestController
 {
+    public function __construct()
+    {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Headers: content-type, Authorization');
+        header('Content-Type: application/json; charset=UTF-8');
+        header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE");
+    }
+
     /**
      * Create an order for a particular user
      *
@@ -64,5 +73,40 @@ class OrderController extends AbstractFOSRestController
         }
 
         return $response;
+    }
+
+
+    /**
+     * @Get("/users/orders.{_format}")
+     * @Options("/users/orders.{_format}")
+     * @return |null
+     */
+    public function listOrders()
+    {
+        $response = null;
+        $logger = $this->container->get('monolog.logger.exception');
+        try {
+            $result = $this->container->get('eat24.user_api_processing_service')->processListOrdersRequest();
+
+            $response = $this->container->get('eat24.api_response_service')
+                ->createUserApiSuccessResponse(
+                    'OrderListResponse', $result['message']['response']
+                );
+        } catch (AccessDeniedHttpException $ex) {
+            throw $ex;
+        } catch (BadRequestHttpException $ex) {
+            throw $ex;
+        } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
+        } catch (HttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $logger->error(__FUNCTION__.' function failed due to Error : '.
+                $ex->getMessage());
+            // Throwing Internal Server Error Response In case of Unknown Errors.
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+        return $response;
+
     }
 }

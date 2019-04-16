@@ -70,7 +70,7 @@ class RestaurantController extends AbstractFOSRestController
     /**
      * Fetch the restaurants list within a certain location
      *
-     * @Post("/restaurants/menu.{_format}")
+     * @Get("/restaurants/menu.{_format}")
      * @Options("/restaurants/menu.{_format}")
      *
      * @param Request $request

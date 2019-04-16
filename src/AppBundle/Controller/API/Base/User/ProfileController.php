@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Swagger\Annotations as SWG;
 
 class ProfileController extends AbstractFOSRestController
 {
@@ -22,7 +23,182 @@ class ProfileController extends AbstractFOSRestController
      *
      * @Post("/login.{_format}")
      * @Options("/login.{_format}")
-     * @param Request $request
+     *
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="credentials",
+     *              type="object",
+     *                  @SWG\Property(
+     *                      property="emailId",
+     *                      type="string",
+     *                      example="jayraj.arora@gmail.com"
+     *                  ),
+     *                  @SWG\Property(
+     *                      property="password",
+     *                      type="string",
+     *                      example="<Password Here>"
+     *                  )
+     *          )
+     *     )
+     *  )
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Login api returning back access and refresh token.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="AuthenticationResponse",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="accessToken",
+     *                  type="string",
+     *                  example="string"
+     *              ),
+     *              @SWG\Property(
+     *                  property="refresToken",
+     *                  type="string",
+     *                  example="string"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1014"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid Credentials found in Request Content."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=422,
+     *     description="Unprocessable Entity",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1014"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid Credentials found in Request Content."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=503,
+     *     description="Service Unavaliable.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="503"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Service Temporarily Unavailable"
+     *              )
+     *          )
+     *      )
+     *  )
+     *
+     *  @SWG\Tag(name="User")
+     *  @param Request $request
      *
      *  @return array
      **/
@@ -67,11 +243,170 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
-     * To POST refresh token of user and Generate a new access token.
      *
-     * Creates new Access Token using refresh token and returns in response.
+     * Creates new Access Token using refresh token
      *
      * @Post("/renew.{_format}")
+     *
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="refreshToken",
+     *              type="string",
+     *              example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.afnnvqmfdAq"
+     *          )
+     *     )
+     *  )
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns back Auth token",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="AuthenticationResponse",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="accessToken",
+     *                  type="string",
+     *                  example="string"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1014"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid Credentials found in Request Content."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=422,
+     *     description="Unprocessable Entity",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1021"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Refresh Token provided in request has been expired."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=503,
+     *     description="Service Unavaliable.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="503"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Service Temporarily Unavailable"
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Tag(name="User")
+     *
      * @Options("/renew.{_format}")
      * @param Request $request
      * @return array
@@ -98,8 +433,7 @@ class ProfileController extends AbstractFOSRestController
                 ->createUserApiSuccessResponse('AuthenticationResponse',
                     $this->container
                         ->get('eat24.authenticate_authorize_service')
-                        ->processOAuthRefreshRequest($content)
-                    ['message']['response']
+                        ->processOAuthRefreshRequest($content)['message']['response']
                 )
             ;
         } catch (BadRequestHttpException $ex) {
@@ -119,6 +453,184 @@ class ProfileController extends AbstractFOSRestController
 
     /**
      * @Post("/users.{_format}")
+     *
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="UserRequest",
+     *              type="object",
+     *              @SWG\Property(
+     *              property="username",
+     *              type="string",
+     *              example="jayraj"
+     *              ),
+     *               @SWG\Property(
+     *              property="emailId",
+     *              type="string",
+     *              example="jayraj.arora@gmail.com"
+     *              ),
+     *               @SWG\Property(
+     *              property="password",
+     *              type="string",
+     *              example="jayraj123"
+     *              ),
+     *               @SWG\Property(
+     *              property="phoneNumber",
+     *              type="integer",
+     *              example="7895980866"
+     *              )
+     *          )
+     *     )
+     *  )
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns back Auth token",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="AuthenticationResponse",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="accessToken",
+     *                  type="string",
+     *                  example="string"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1014"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid Credentials found in Request Content."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=422,
+     *     description="Unprocessable Entity",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1021"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Refresh Token provided in request has been expired."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=503,
+     *     description="Service Unavaliable.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="503"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Service Temporarily Unavailable"
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Tag(name="User")
      * @Options("/users.{_format}")
      * @param Request $request
      * @return array

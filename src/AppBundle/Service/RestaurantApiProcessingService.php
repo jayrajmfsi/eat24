@@ -75,6 +75,7 @@ class RestaurantApiProcessingService extends BaseService
                 $menuItemResult[$category][] = $menuItem;
             }
             $processResult['data'] = [
+                'restaurantName' => $restaurant->getName(),
                 'restaurantCode' => $restaurant->getReference(),
                 'menuItems' => $menuItemResult
             ];

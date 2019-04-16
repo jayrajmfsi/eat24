@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class UserApiValidationService extends BaseService
 {
@@ -79,7 +80,7 @@ class UserApiValidationService extends BaseService
 
             // Checking that both username and email if provided should be unique.
             if (!empty($user)) {
-                throw new UnprocessableEntityHttpException(ErrorConstants::USERNAME_EXISTS);
+                throw new ConflictHttpException(ErrorConstants::USERNAME_EXISTS);
             }
 
             // validate username
@@ -96,6 +97,8 @@ class UserApiValidationService extends BaseService
         } catch (BadRequestHttpException $ex) {
             throw $ex;
         } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
+        } catch (ConflictHttpException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
             $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
@@ -144,6 +147,8 @@ class UserApiValidationService extends BaseService
         } catch (BadRequestHttpException $ex) {
             throw $ex;
         } catch (UnprocessableEntityHttpException $ex) {
+            throw $ex;
+        } catch (ConflictHttpException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
             $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $ex->getMessage());
@@ -213,7 +218,7 @@ class UserApiValidationService extends BaseService
         try {
             // Checking the format of new Old Password.
             if (empty($newPassword) || strlen($newPassword) > 100) {
-                throw new BadRequestHttpException(ErrorConstants::INVALID_NEWPASSFORMAT);
+                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_NEWPASSFORMAT);
             }
 
             $user = $this->serviceContainer
@@ -259,7 +264,7 @@ class UserApiValidationService extends BaseService
     {
         // Checking if the username is valid.
         if (strlen($userName) > 50) {
-            throw new BadRequestHttpException(ErrorConstants::INVALID_USERNAME);
+            throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_USERNAME);
         }
 
         $previousUser = $this->serviceContainer
@@ -269,7 +274,7 @@ class UserApiValidationService extends BaseService
 
         // Checking if UserName is already taken by someone.
         if (!empty($previousUser) && (empty($user) || $user->getId() !== $previousUser->getId())) {
-            throw new UnprocessableEntityHttpException(ErrorConstants::USERNAME_EXISTS);
+            throw new ConflictHttpException( ErrorConstants::USERNAME_EXISTS);
         }
     }
 
@@ -285,7 +290,7 @@ class UserApiValidationService extends BaseService
     {
         // Checking if the phone number is valid.
         if (strlen($phoneNumber) > 10) {
-            throw new BadRequestHttpException(ErrorConstants::INVALID_PHONE_NUMBER);
+            throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_PHONE_NUMBER);
         }
 
         $previousUser = $this->serviceContainer
@@ -295,7 +300,7 @@ class UserApiValidationService extends BaseService
 
         // Checking if phoneNumber is already taken by someone.
         if (!empty($previousUser) && (empty($user) || $user->getId() !== $previousUser->getId())) {
-            throw new UnprocessableEntityHttpException(ErrorConstants::PHONE_NUMBER_EXISTS);
+            throw new HttpException(409, ErrorConstants::PHONE_NUMBER_EXISTS);
         }
     }
 
@@ -322,7 +327,7 @@ class UserApiValidationService extends BaseService
 
         // Checking if Email is already taken by someone.
         if (!empty($emailUser) && (empty($user) || $user->getId() !== $emailUser->getId())) {
-            throw new UnprocessableEntityHttpException(ErrorConstants::EMAIL_EXISTS);
+            throw new ConflictHttpException(ErrorConstants::EMAIL_EXISTS);
         }
         return $emailUser;
     }

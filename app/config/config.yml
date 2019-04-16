@@ -185,3 +185,12 @@ nelmio_api_doc:
     info:
       title: Eat 24 Platform
       version: 1.0.0
+      description: Food delivery system
+    securityDefinitions:
+      Bearer:
+        type: apiKey
+        description: 'Value: Bearer {jwt}'
+        name: Authorization
+        in: header
+    security:
+      - Bearer: []

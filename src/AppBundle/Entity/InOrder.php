@@ -40,7 +40,7 @@ class InOrder
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\InRestaurant")
      * @ORM\JoinColumn(name="menu_item_id", referencedColumnName="id")
      */
-    private $menuItem;
+    private $inRestaurant;
 
     /**
      * Get id
@@ -98,18 +98,18 @@ class InOrder
     /**
      * @return InRestaurant
      */
-    public function getMenuItem()
+    public function getInRestaurant()
     {
-        return $this->menuItem;
+        return $this->inRestaurant;
     }
 
     /**
-     * @param InRestaurant $menuItem
+     * @param InRestaurant $inRestaurant
      * @return InOrder
      */
-    public function setMenuItem($menuItem)
+    public function setInRestaurant($inRestaurant)
     {
-        $this->menuItem = $menuItem;
+        $this->inRestaurant = $inRestaurant;
 
         return $this;
     }

@@ -7,13 +7,11 @@
 
 namespace AppBundle\EventListener;
 
-use Doctrine\DBAL\Types\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use AppBundle\Service\BaseService;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class RequestListener extends BaseService
 {
@@ -47,7 +45,7 @@ class RequestListener extends BaseService
         $route = $request->attributes->get('_route');
 
         $this->setRequestContent($request);
-
+//        dump($request->headers->all());exit();
         // Checking if request is not for APIs.
         if (false === strpos($route, 'api_v')) {
             return true;
@@ -72,10 +70,10 @@ class RequestListener extends BaseService
 
         // authentication of a particular user
         if (!strpos($request->getPathInfo(), '/login')
-            && !strpos($request->getPathInfo(), '/users')
             && !strpos($request->getPathInfo(), '/renew')
             && !strpos($request->getPathInfo(), '/restaurants')
             && !strpos($request->getPathInfo(), '/restaurant/menu')
+            && !($request->getPathInfo() == '/1.0/users')
         ) {
             $authResult = $authService->authenticateApiRequest($request);
             $request->attributes->set('emailId', $authResult['message']['emailId']);

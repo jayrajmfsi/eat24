@@ -21,6 +21,7 @@ class InRestaurantRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('in_restaurant.description')
             ->addSelect('menu_item.isVeg')
             ->addSelect('menu_item.name')
+            ->addSelect('in_restaurant.itemReference as code')
             ->addSelect('category.name as categoryName')
             ->where('in_restaurant.restaurant = :restaurant')
             ->andWhere('in_restaurant.active = :active')

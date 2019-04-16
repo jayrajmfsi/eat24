@@ -10,4 +10,18 @@ namespace AppBundle\Repository;
  */
 class InOrderRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function fetchOrderItemDetails($orderId)
+    {
+        $qb = $this->createQueryBuilder('inOrder')
+            ->join('inOrder.inRestaurant', 'inRestaurant')
+            ->join('inRestaurant.menuItem', 'menuItem')
+            ->select('inOrder.quantity')
+            ->addSelect('inRestaurant.price')
+            ->addSelect('menuItem.name')
+            ->andWhere('inOrder.placedOrder = :placedOrderId')
+            ->setParameter('placedOrderId', $orderId)
+        ;
+
+        return $qb->getQuery()->getArrayResult();
+    }
 }

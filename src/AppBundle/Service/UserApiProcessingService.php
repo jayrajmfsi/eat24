@@ -303,4 +303,37 @@ class UserApiProcessingService extends BaseService
 
         return $processResult;
     }
+
+    public function processListOrdersRequest()
+    {
+        $processResult['status'] = false;
+        try {
+            $orderData = [];
+
+            $user = $this->getCurrentUser();
+
+            $orders = $this->entityManager->getRepository('AppBundle:PlacedOrder')->fetchOrders($user->getId());
+
+            foreach ($orders as $index => $order) {
+                $orderData[$index]['restaurantName'] = $order['name'];
+
+                $orderData[$index]['bookedAt'] = $order['createdDateTime']->format('Y-m-d H:i:s');
+                $orderData[$index]['deliveryAddress'] = $order['completeAddress'];
+                $orderData[$index]['finalPrice'] = $order['finalPrice'];
+
+                $menuItems = $this->entityManager->getRepository('AppBundle:InOrder')
+                    ->fetchOrderItemDetails($order['id'])
+                ;
+
+                $orderData[$index]['menuItems'] = $menuItems;
+            }
+            $processResult['message']['response'] = $orderData;
+            $processResult['status'] = true;
+        } catch (\Exception $e) {
+            $this->logger->error(__FUNCTION__ . ' function failed due to Error :' . $e->getMessage());
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
+        }
+
+        return $processResult;
+    }
 }

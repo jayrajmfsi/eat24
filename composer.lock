@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2b20d73636c8e93119c120abc95142f",
+    "content-hash": "b36120307aaedc4147e5c3ae810c0f79",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -972,6 +972,58 @@
                 "orm"
             ],
             "time": "2017-12-17T02:57:51+00:00"
+        },
+        {
+            "name": "ekreative/health-check-bundle",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ekreative/health-check-bundle.git",
+                "reference": "094035e2d6abb2cbd2aab28f58665b227cff6e54"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ekreative/health-check-bundle/zipball/094035e2d6abb2cbd2aab28f58665b227cff6e54",
+                "reference": "094035e2d6abb2cbd2aab28f58665b227cff6e54",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "symfony/framework-bundle": "^3.4|^4.0"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "^1.10",
+                "ext-redis": "*",
+                "friendsofphp/php-cs-fixer": "^2.14",
+                "phpunit/phpunit": "^7",
+                "symfony/browser-kit": "^3.4|^4.0",
+                "symfony/monolog-bundle": "^3.3",
+                "symfony/phpunit-bridge": "^3.4|^4.0",
+                "symfony/yaml": "^3.4|^4.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Ekreative\\HealthCheckBundle\\": "src/Ekreative/HealthCheckBundle/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fred Cox",
+                    "email": "mcfedr@gmail.com"
+                }
+            ],
+            "description": "A bundle that provides a simple /healthcheck route",
+            "keywords": [
+                "doctrine",
+                "healthcheck",
+                "redis"
+            ],
+            "time": "2019-02-27T08:33:59+00:00"
         },
         {
             "name": "exsyst/swagger",
