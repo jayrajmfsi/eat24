@@ -35,9 +35,10 @@ final class ErrorConstants
     const INVALID_MENU_ITEM_CODE = 'INVALID_RESTAURANT_CODE';
     const INVALID_REFRESH_TOKEN = 'INVALIDREFRESHTOKEN';
     const EXPIRED_REFRESH_TOKEN = 'EXPIREDREFRESHTOKEN';
-    const INVALID_OLDPASS = 'INVALIDOLDPASS';
-    const INVALID_NEWPASSFORMAT = 'INVALIDNEWPASSFORMAT';
+    const INVALID_OLD_PASSWORD = 'INVALIDOLDPASS';
+    const INVALID_NEW_PASSWORD_FORMAT = 'INVALIDNEWPASSFORMAT';
     const DISABLEDUSER = 'DISABLEDUSER';
+    const INVALID_CONFIRM_PASSWORD = 'INVALIDCONFIRMPASSWORD';
 
     public static $errorCodeMap = [
         self::INVALID_AUTHORIZATION => ['code' => '403', 'message' => 'api.response.error.request_unauthorized'],
@@ -66,8 +67,9 @@ final class ErrorConstants
         self::EMAIL_EXISTS => ['code' => '1018', 'message' => 'api.response.error.email_exists'],
         self::INVALID_REFRESH_TOKEN => ['code' => '1021', 'message' => 'api.response.error.invalid_refresh_token'],
         self::EXPIRED_REFRESH_TOKEN => ['code' => '1022', 'message' => 'api.response.error.expired_refresh_token'],
-        self::INVALID_OLDPASS => ['code' => '1018', 'message' => 'api.response.error.invalid_old_pass'],
-        self::INVALID_NEWPASSFORMAT => ['code' => '1019', 'message' => 'api.response.error.invalid_newpass_format'],
+        self::INVALID_OLD_PASSWORD => ['code' => '1018', 'message' => 'api.response.error.invalid_old_pass'],
+        self::INVALID_NEW_PASSWORD_FORMAT => ['code' => '1019', 'message' => 'api.response.error.invalid_newpass_format'],
         self::DISABLEDUSER => ['code' => '1020', 'message' => 'api.response.error.disabled_user'],
+        self::INVALID_CONFIRM_PASSWORD => ['code' => '1021', 'message' => 'api.response.error.invalid_confirm_password'],
     ];
 }

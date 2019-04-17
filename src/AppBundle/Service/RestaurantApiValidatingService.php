@@ -6,10 +6,11 @@ use AppBundle\Constants\ErrorConstants;
 use AppBundle\Entity\Restaurant;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class RestaurantApiValidatingService extends BaseService
 {
-    public function validateFilterRestaurantRequest($requestContent)
+    public function parseFilterRestaurantRequest($requestContent)
     {
         $validateResult['status'] = false;
         try {
@@ -104,7 +105,7 @@ class RestaurantApiValidatingService extends BaseService
             ;
 
             if (!$restaurant) {
-                throw new BadRequestHttpException(ErrorConstants::INVLAID_RESTAURANT_CODE);
+                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_RESTAURANT_CODE);
             }
             $validateResult['response'] = [
                 'restaurant' => $restaurant

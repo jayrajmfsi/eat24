@@ -30,7 +30,7 @@ class UserApiValidationService extends BaseService
                     empty($requestContent['credentials']['emailId'])
                 ||  empty($requestContent['credentials']['password'])
             ) {
-                throw new BadRequestHttpException(ErrorConstants::INVALID_CRED);
+                throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
 
             // Checking the length of both fields of credentials.
@@ -38,7 +38,7 @@ class UserApiValidationService extends BaseService
                     strlen($requestContent['credentials']['emailId']) > 180
                 ||  strlen($requestContent['credentials']['password']) > 180
             ) {
-                throw new BadRequestHttpException(ErrorConstants::INVALID_CRED);
+                throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
 
             $validateResult['status'] = true;
@@ -127,14 +127,20 @@ class UserApiValidationService extends BaseService
             if (!empty($requestContent['UserRequest']['phoneNumber'])) {
                 $this->validatePhoneNumber($requestContent['UserRequest']['phoneNumber'], $user);
             }
+            if (!empty($requestContent['UserRequest']['oldPassword'])) {
 
-            if (!empty($requestContent['UserRequest']['oldPassword'])
-            ) {
-                $this->validateChangePasswordRequest(
-                    $requestContent['UserRequest']['oldPassword'],
-                    !empty($requestContent['UserRequest']['newPassword'])
-                        ? $requestContent['UserRequest']['newPassword'] : null
-                );
+                if (empty($requestContent['UserRequest']['password'])
+                    || empty($requestContent['UserRequest']['confirmPassword'])
+                    || $requestContent['UserRequest']['confirmPassword'] > 100
+                    || $requestContent['UserRequest']['password'] > 100
+                ) {
+                    throw new BadRequestHttpException(ErrorConstants::INVALID_NEW_PASSWORD_FORMAT);
+                }
+
+                if ($requestContent['UserRequest']['password'] != $requestContent['UserRequest']['confirmPassword']) {
+                    throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_CONFIRM_PASSWORD);
+                }
+                $this->validateChangePasswordRequest($requestContent['UserRequest']['oldPassword']);
             }
 
             $validateResult['message']['response'] = [
@@ -174,7 +180,7 @@ class UserApiValidationService extends BaseService
                     empty($requestContent)
                 ||  empty($requestContent['refreshToken'])
             ) {
-                throw new BadRequestHttpException(ErrorConstants::INVALID_REFRESH_TOKEN);
+                throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
 
             // checking the length of the refreshToken.
@@ -200,7 +206,7 @@ class UserApiValidationService extends BaseService
     {
         // Checking the format of Password.
         if (strlen($password) > 100) {
-            throw new BadRequestHttpException(ErrorConstants::INVALID_NEWPASSFORMAT);
+            throw new BadRequestHttpException(ErrorConstants::INVALID_NEW_PASSWORD_FORMAT);
         }
     }
 
@@ -212,14 +218,10 @@ class UserApiValidationService extends BaseService
      *
      *  @return array
      */
-    public function validateChangePasswordRequest($oldPassword, $newPassword)
+    public function validateChangePasswordRequest($oldPassword)
     {
         $validateResult['status'] = false;
         try {
-            // Checking the format of new Old Password.
-            if (empty($newPassword) || strlen($newPassword) > 100) {
-                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_NEWPASSFORMAT);
-            }
 
             $user = $this->serviceContainer
                 ->get('fos_user.user_manager')
@@ -236,7 +238,7 @@ class UserApiValidationService extends BaseService
             // Checking
             // if the Old Password provided is valid or not.
             if (empty($user)) {
-                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_OLDPASS);
+                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_OLD_PASSWORD);
             }
 
             $validateResult['status'] = true;
@@ -388,7 +390,7 @@ class UserApiValidationService extends BaseService
                 if (!(float)$requestContent['UserDeliveryAddressRequest']['latitude'] ||
                     !(float)$requestContent['UserDeliveryAddressRequest']['longitude']
                 ) {
-                    throw new BadRequestHttpException(ErrorConstants::INVALID_GEO_POINT);
+                    throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_GEO_POINT);
                 }
             }
 
@@ -408,8 +410,6 @@ class UserApiValidationService extends BaseService
         $validatedResult['status'] = false;
         try {
             if (empty($requestContent['detectLocationRequest'])
-                || empty($requestContent['detectLocationRequest']['longitude'])
-                || empty($requestContent['detectLocationRequest']['latitude'])
                 || empty($requestContent['detectLocationRequest']['restaurantCode'])
             ) {
                 throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);

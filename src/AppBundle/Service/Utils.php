@@ -147,7 +147,7 @@ class Utils extends BaseService
             ->findOneBy(['reference' => $reference])
         ;
         if (empty($restaurant)) {
-            throw new BadRequestHttpException(ErrorConstants::INVALID_RESTAURANT_CODE);
+            throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_RESTAURANT_CODE);
         }
         return $restaurant;
     }
@@ -159,7 +159,7 @@ class Utils extends BaseService
                 ->getAddress($userId, $addressCode);
 
             if (!$address) {
-                throw new BadRequestHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
+                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
             }
 
             return $address;

@@ -8,7 +8,6 @@
 
 namespace AppBundle\Service;
 
-use http\Exception\InvalidArgumentException;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
@@ -17,7 +16,6 @@ use AppBundle\Security\UserToken;
 use AppBundle\Constants\ErrorConstants;
 use AppBundle\Constants\GeneralConstants;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -44,7 +42,7 @@ class AuthenticateAuthorize extends BaseService
             }
 
             // Checking Authorization Key for validating Token.
-            $authorizationParts = explode(" ", $request->headers->get('Authorization'));
+            $authorizationParts = explode(" ", $request->headers->get('apiKey'));
             if (
                     count($authorizationParts) !== 2 || 'Eat24' !== $authorizationParts[0]
                 ||  empty(trim($authorizationParts[1]))

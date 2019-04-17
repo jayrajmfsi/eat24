@@ -5,9 +5,7 @@ namespace AppBundle\Service;
 use AppBundle\Constants\ErrorConstants;
 use AppBundle\Entity\Address;
 use AppBundle\Entity\InOrder;
-use AppBundle\Entity\OrderStatus;
 use AppBundle\Entity\PlacedOrder;
-use AppBundle\Entity\StatusCatalog;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Utils\Point;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -36,12 +34,8 @@ class UserApiProcessingService extends BaseService
                 $data['username'] = $requestContent['UserRequest']['username'];
             }
 
-            if (!empty($requestContent['UserRequest']['newPassword'])
-                || !empty($requestContent['UserRequest']['password'])
-            ) {
-                $data['password'] = isset($requestContent['UserRequest']['newPassword'])
-                    ? $requestContent['UserRequest']['newPassword']
-                    : $requestContent['UserRequest']['password'];
+            if (!empty($requestContent['UserRequest']['password'])) {
+                $data['password'] = $requestContent['UserRequest']['password'];
             }
 
             // Setting the email in data if User is being Created.
@@ -244,10 +238,23 @@ class UserApiProcessingService extends BaseService
     {
         $processResult['status'] = false;
         try {
+            if (!empty($content['addressCode'])) {
+                /** @var Address $address */
+                $address = $this->entityManager->getRepository('AppBundle:Address')
+                    ->getAddress($this->getCurrentUser()->getId(), $content['addressCode'])
+                ;
+
+                if (!$address) {
+                    throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_ADDRESS_CODE);
+                }
+
+                $geoPoint = $address->getGeoPoint();
+            } else {
+                $geoPoint = new Point($content['latitude'], $content['longitude']);
+            }
             $address = $this->entityManager->getRepository('AppBundle:Address')
                 ->checkDeliveryLocation(
-                    $content['longitude'],
-                    $content['latitude'],
+                    $geoPoint,
                     $restaurantId,
                     $this->serviceContainer->getParameter('restaurant_range')
                 )
@@ -278,16 +285,16 @@ class UserApiProcessingService extends BaseService
             foreach ($content['orderItems'] as $orderItem) {
                 $inOrder = new InOrder();
 
-                $menuItem = $this->entityManager->getRepository('AppBundle:InRestaurant')
+                $menuItemDetails = $this->entityManager->getRepository('AppBundle:InRestaurant')
                     ->findOneBy(['itemReference' => $orderItem['code']])
                 ;
-                if (!$menuItem) {
+                if (!$menuItemDetails) {
                     throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_MENU_ITEM_CODE);
                 }
 
                 $inOrder->setQuantity($orderItem['quantity']);
                 $inOrder->setPlacedOrder($order);
-                $inOrder->setMenuItem($menuItem);
+                $inOrder->setInRestaurant($menuItemDetails);
 
                 $this->entityManager->persist($inOrder);
             }

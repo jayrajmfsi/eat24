@@ -186,11 +186,16 @@ nelmio_api_doc:
       title: Eat 24 Platform
       version: 1.0.0
       description: Food delivery system
-    securityDefinitions:
-      Bearer:
-        type: apiKey
-        description: 'Value: Bearer {jwt}'
-        name: Authorization
-        in: header
-    security:
-      - Bearer: []
+    tags:
+      - name: Auth
+        description: Operations on getting access token and refresh token
+      - name: Profile
+        description: Operations on customer profile creation and updation
+      - name: Address
+        description: Operations on user addresses
+      - name: Restaurant
+        description: Operations on restaurants and its menu
+      - name: Order
+        description: Operations on user orders
+
+

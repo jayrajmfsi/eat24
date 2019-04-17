@@ -26,6 +26,7 @@ class ExceptionListener extends BaseService
             ? $event->getException()->getStatusCode()
             : 500;
         $exceptionMessage = $event->getException()->getMessage();
+
         if (!is_array($exceptionMessage) && !in_array($exceptionMessage, array_keys(ErrorConstants::$errorCodeMap))) {
             // Log the Exception Not thrown from controllers because other have been logged Already in controllers.
             $this->logger->error("Error",

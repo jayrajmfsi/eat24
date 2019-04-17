@@ -73,7 +73,7 @@ class RequestListener extends BaseService
             && !strpos($request->getPathInfo(), '/renew')
             && !strpos($request->getPathInfo(), '/restaurants')
             && !strpos($request->getPathInfo(), '/restaurant/menu')
-            && !($request->getPathInfo() == '/1.0/users')
+            && !($request->getPathInfo() == '/1.0/users' && $request->getMethod() == 'POST')
         ) {
             $authResult = $authService->authenticateApiRequest($request);
             $request->attributes->set('emailId', $authResult['message']['emailId']);

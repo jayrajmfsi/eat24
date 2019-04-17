@@ -32,22 +32,20 @@ class AddressRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    public function getAddress($customerId, $addressCode)
+    public function getAddress($customerId, $addressCode, $addressType = Address::CUSTOMER_ADDRESS)
     {
         $qb = $this->createQueryBuilder('address')
             ->where('address.customerId = :customerId')
             ->andWhere('address.token = :token')
             ->andWhere('address.addressType = :type')
-            ->setParameters(['token' => $addressCode, 'customerId' => $customerId, 'type' => Address::CUSTOMER_ADDRESS])
+            ->setParameters(['token' => $addressCode, 'customerId' => $customerId, 'type' => $addressType])
         ;
 
         return $qb->getQuery()->getOneOrNullResult();
     }
 
-    public function checkDeliveryLocation($longitude, $latitude, $restaurantId, $range)
+    public function checkDeliveryLocation($geoPoint, $restaurantId, $range)
     {
-        $geoPoint = new Point($latitude, $longitude);
-
         $qb = $this->createQueryBuilder('address')
             ->where('address.customerId = :restaurantId')
             ->andWhere('address.addressType = :type')

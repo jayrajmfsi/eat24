@@ -3,7 +3,7 @@ api:
     error:
       request_unauthorized: The request was found unauthorized to perform the specified task.
       invalid_content: Request couldn't be processed due to Invalid Content.
-      invalid_credentials: Invalid Credentials found in Request Content.
+      invalid_credentials: Invalid credentials provided.
       internal_error: An error occurred on the server.  Some extra detail may exist in the Response object.
       invalid_content_type: "Content-Type not set in the header or the content type/content is invalid."
       invalid_request_data: "The operation was rejected due to invalid request content provided."
@@ -19,18 +19,14 @@ api:
               reversal needs to be triggered from device end."
       invalid_auth_fields: "Authentication failed due to invalid access key or secret access key or signature hash."
       incomplete_req: "Incomplete Request."
-      invalid_currency_code: "Transaction rejected due to invalid currency code."
       invalid_content_length: "Content Length not set or the content length set is incorrect."
       phone_number_exists: "Phone Number Already Exists in the db"
-      invalid_terminal_id: "Request could not be processed because of either Invalid Terminal Id or Terminal not in state to perform any transaction."
-      no_allowed_merchant_found: "No Allowed Merchant Found to use for Eload Products Sync."
-      invalid_supplier_code: "Invalid Supplier Code found in request."
-      invalid_geo_point: "Invalid Geo location point found in request content"
+      invalid_geo_point: "Invalid Geo-location point format found in request content"
       invalid_restaurant_code: "Invalid Restaurant Code found in request content"
       invalid_phone_number: "Invalid Phone number found in request content."
       invalid_email: "No User is not associated with this email"
       invalid_email_data: "Invalid Email format found in request content."
-      invalid_username: "Invalid username provided in request."
+      invalid_username: "Invalid username format provided in request."
       invalid_auth_token: "Invalid Access Token provided in request auth header."
       auth_token_expired: "Access Token provided in request has been expired."
       invalid_menu_item_code: "Invalid menu item code provided in the order Request"
@@ -40,7 +36,8 @@ api:
       invalid_refresh_token: "Invalid refresh token provided in request content."
       expired_refresh_token: "Refresh Token provided in request has been expired."
       invalid_old_pass: "Invalid Old password provided in request content."
-      invalid_newpass_format: "Invalid New password format provided in request content."
+      invalid_newpass_format: "Invalid arguments for the new password provided in request content."
+      invalid_confirm_password: "The password and confirm Password do not Match"
       disabled_user: "The user account is currently disabled."
 
     success:
@@ -52,7 +49,7 @@ api:
       address_updated: Address was updated succesfully.
       address_deleted: Address was deleted succesfully.
       location_deliverable: The Address is deliverable
-      location_not_deliverable: Sorry. The Address is not deliverable. Please try with another address
+      location_not_deliverable: Sorry. The Address is not deliverable. Please try with another address or add another address
       order_booked: Order Booked successfully.
     failure:
       message: failure

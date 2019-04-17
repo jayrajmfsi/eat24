@@ -19,7 +19,7 @@ use Swagger\Annotations as SWG;
 class ProfileController extends AbstractFOSRestController
 {
     /**
-     * To POST username and password of user and create Access and Refresh token for User.
+     * Check login credentials and create access and refresh token for user.
      *
      * @Post("/login.{_format}")
      * @Options("/login.{_format}")
@@ -35,7 +35,7 @@ class ProfileController extends AbstractFOSRestController
      *                  @SWG\Property(
      *                      property="emailId",
      *                      type="string",
-     *                      example="jayraj.arora@gmail.com"
+     *                      example="<emailId here>"
      *                  ),
      *                  @SWG\Property(
      *                      property="password",
@@ -66,12 +66,12 @@ class ProfileController extends AbstractFOSRestController
      *              @SWG\Property(
      *                  property="accessToken",
      *                  type="string",
-     *                  example="string"
+     *                  example="safaafa.dqwrava.afwqfaf"
      *              ),
      *              @SWG\Property(
      *                  property="refresToken",
      *                  type="string",
-     *                  example="string"
+     *                  example="asdamd.adasd.asdwqqwrqqw"
      *              )
      *          )
      *      )
@@ -96,12 +96,12 @@ class ProfileController extends AbstractFOSRestController
      *              @SWG\Property(
      *                  property="code",
      *                  type="integer",
-     *                  example="1014"
+     *                  example="1002"
      *              ),
      *              @SWG\Property(
      *                  property="text",
      *                  type="string",
-     *                  example="Invalid Credentials found in Request Content."
+     *                  example="The operation was rejected due to invalid request content provided."
      *              )
      *          )
      *      )
@@ -131,7 +131,7 @@ class ProfileController extends AbstractFOSRestController
      *              @SWG\Property(
      *                  property="text",
      *                  type="string",
-     *                  example="Invalid Credentials found in Request Content."
+     *                  example="Invalid Credentials provided."
      *              )
      *          )
      *      )
@@ -197,7 +197,7 @@ class ProfileController extends AbstractFOSRestController
      *      )
      *  )
      *
-     *  @SWG\Tag(name="User")
+     *  @SWG\Tag(name="Auth")
      *  @param Request $request
      *
      *  @return array
@@ -244,7 +244,7 @@ class ProfileController extends AbstractFOSRestController
 
     /**
      *
-     * Creates new Access Token using refresh token
+     * Checks refresh token and creates new access token
      *
      * @Post("/renew.{_format}")
      *
@@ -305,12 +305,12 @@ class ProfileController extends AbstractFOSRestController
      *              @SWG\Property(
      *                  property="code",
      *                  type="integer",
-     *                  example="1014"
+     *                  example="1002"
      *              ),
      *              @SWG\Property(
      *                  property="text",
      *                  type="string",
-     *                  example="Invalid Credentials found in Request Content."
+     *                  example="The operation was rejected due to invalid request content provided."
      *              )
      *          )
      *      )
@@ -405,7 +405,7 @@ class ProfileController extends AbstractFOSRestController
      *          )
      *      )
      *  )
-     *  @SWG\Tag(name="User")
+     *  @SWG\Tag(name="Auth")
      *
      * @Options("/renew.{_format}")
      * @param Request $request
@@ -452,6 +452,7 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
+     * Create an user
      * @Post("/users.{_format}")
      *
      * @SWG\Parameter(
@@ -487,7 +488,7 @@ class ProfileController extends AbstractFOSRestController
      *  )
      * @SWG\Response(
      *     response=200,
-     *     description="Returns back Auth token",
+     *     description="User created success response",
      *     @SWG\Schema(
      *          @SWG\Property(
      *              property="reasonCode",
@@ -500,12 +501,12 @@ class ProfileController extends AbstractFOSRestController
      *              example="Success"
      *          ),
      *          @SWG\Property(
-     *              property="AuthenticationResponse",
+     *              property="UserResponse",
      *              type="object",
      *              @SWG\Property(
-     *                  property="accessToken",
+     *                  property="status",
      *                  type="string",
-     *                  example="string"
+     *                  example="User was created successfully."
      *              )
      *          )
      *      )
@@ -530,12 +531,12 @@ class ProfileController extends AbstractFOSRestController
      *              @SWG\Property(
      *                  property="code",
      *                  type="integer",
-     *                  example="1014"
+     *                  example="1002"
      *              ),
      *              @SWG\Property(
      *                  property="text",
      *                  type="string",
-     *                  example="Invalid Credentials found in Request Content."
+     *                  example="The operation was rejected due to invalid request content provided."
      *              )
      *          )
      *      )
@@ -560,12 +561,42 @@ class ProfileController extends AbstractFOSRestController
      *              @SWG\Property(
      *                  property="code",
      *                  type="integer",
-     *                  example="1021"
+     *                  example="1013"
      *              ),
      *              @SWG\Property(
      *                  property="text",
      *                  type="string",
-     *                  example="Refresh Token provided in request has been expired."
+     *                  example="Invalid username format provided in request"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=409,
+     *     description="Conflict of resource",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1017"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Username provided in request is taken by someone else, please try with another username."
      *              )
      *          )
      *      )
@@ -630,7 +661,7 @@ class ProfileController extends AbstractFOSRestController
      *          )
      *      )
      *  )
-     *  @SWG\Tag(name="User")
+     *  @SWG\Tag(name="Profile")
      * @Options("/users.{_format}")
      * @param Request $request
      * @return array
@@ -686,8 +717,229 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
+     * Updates an user
      * @Put("/users.{_format}")
      * @Options("/users.{_format}")
+     *
+     * @SWG\Parameter(
+     *     name="apiKey",
+     *     in="header",
+     *     required=true,
+     *     description="Authorization with the help of jwt access token"
+     * )
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="UserRequest",
+     *              type="object",
+     *              @SWG\Property(
+     *              property="username",
+     *              type="string",
+     *              example="jayraj"
+     *              ),
+     *               @SWG\Property(
+     *              property="oldPassword",
+     *              type="string",
+     *              example="mindfire"
+     *              ),
+     *               @SWG\Property(
+     *              property="password",
+     *              type="string",
+     *              example="jayraj123"
+     *              ),
+     *               @SWG\Property(
+     *              property="confirmPassword",
+     *              type="integer",
+     *              example="jayraj123"
+     *              ),
+     *               @SWG\Property(
+     *              property="phoneNumber",
+     *              type="integer",
+     *              example="789607535"
+     *              )
+     *          )
+     *     )
+     *  )
+     * @SWG\Response(
+     *     response=200,
+     *     description="User updated success response",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="UserResponse",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="status",
+     *                  type="string",
+     *                  example="User was updated successfully."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1019"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid New password format provided in request content."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=422,
+     *     description="Unprocessable Entity",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1018"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid Old password provided in request content."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1016"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Access Token provided in request has been expired."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=503,
+     *     description="Service Unavaliable.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="503"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Service Temporarily Unavailable"
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Tag(name="Profile")
+     *
      * @param Request $request
      * @return array
      */
@@ -743,8 +995,137 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
+     * Gets the user Profile
      * @Get("/profile.{_format}")
      * @Options("/profile.{_format}")
+     *
+     * @SWG\Parameter(
+     *     name="apiKey",
+     *     in="header",
+     *     required=true,
+     *     description="Authorization with the help of jwt access token"
+     * )
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns back the user profile",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="UserResponse",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="phoneNumber",
+     *                  type="string",
+     *                  example="78960445543"
+     *              ),
+     *              @SWG\Property(
+     *                  property="username",
+     *                  type="string",
+     *                  example="jka"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1016"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Access Token provided in request has been expired."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=503,
+     *     description="Service Unavaliable.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="503"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Service Temporarily Unavailable"
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Tag(name="Profile")
      * @return array
      */
     public function getUserDetails()
@@ -792,7 +1173,192 @@ class ProfileController extends AbstractFOSRestController
      *
      * @Post("/users/addresses.{_format}")
      * @Put("/users/addresses.{_format}")
-     * @Options("/address.{_format}")
+     * @Options("/users/addresses.{_format}")
+     *
+     * @SWG\Parameter(
+     *     name="apiKey",
+     *     in="header",
+     *     required=true,
+     *     description="Authorization with the help of jwt access token"
+     * )
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="UserDeliveryAddressRequest",
+     *              type="object",
+     *                  @SWG\Property(
+     *                      property="location",
+     *                      type="string",
+     *                      example="Chandaka Industrial Estat"
+     *                  ),
+     *                  @SWG\Property(
+     *                      property="addressCode",
+     *                      type="string",
+     *                      example="155527114514742"
+     *                  ),
+     *                 @SWG\Property(
+     *                      property="completeAddress",
+     *                      type="string",
+     *                      example="Chandaka Industrial Estate,DLF Building"
+     *                  )
+     *          )
+     *     )
+     *  )
+     * @SWG\Response(
+     *     response=200,
+     *     description="Address updated/created success response",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="UserDeliveryAddressResponse",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="status",
+     *                  type="string",
+     *                  example="Address was updated succesfully."
+     *              ),
+     *              @SWG\Property(
+     *                  property="addressCode",
+     *                  type="string",
+     *                  example="155527114514742"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1002"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="The operation was rejected due to invalid request content provided"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=422,
+     *     description="Unprocessable Entity",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1009"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid Geo-location point format found in request content"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1016"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Access Token provided in request has been expired."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Tag(name="Address")
+     *
      * @param Request $request
      *
      *  @return array
@@ -849,14 +1415,157 @@ class ProfileController extends AbstractFOSRestController
 
     /**
      * To get address list of user
-     *
      * @Get("/users/addresses.{_format}")
      * @Options("/users/addresses.{_format}")
-     * @param Request $request
+     *
+     * @SWG\Parameter(
+     *     name="apiKey",
+     *     in="header",
+     *     required=true,
+     *     description="Authorization with the help of jwt access token"
+     * )
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns back lists of addresses",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="AddressListResponse",
+     *              type="array",
+     *              @SWG\Items(
+     *                  @SWG\Property(
+     *                      property="completeAddress",
+     *                      type="string",
+     *                      example="Chandaka Industrial Estate,DLF Building, UG"
+     *                  ),
+     *                  @SWG\Property(
+     *                     property="location",
+     *                     type="string",
+     *                     example="Chandaka Industrial"
+     *                  ),
+     *                  @SWG\Property(
+     *                     property="location",
+     *                     type="string",
+     *                     example="Chandaka Industrial"
+     *                  ),
+     *                  @SWG\Property(
+     *                     property="addressCode",
+     *                     type="string",
+     *                     example="155527114514742"
+     *                  ),
+     *                  @SWG\Property(
+     *                     property="nickName",
+     *                     type="string",
+     *                     example="hotel"
+     *                  )
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1016"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Access Token provided in request has been expired."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=503,
+     *     description="Service Unavaliable.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="503"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Service Temporarily Unavailable"
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Tag(name="Address")
      *
      *  @return array
      **/
-    public function viewUserAddressList(Request $request)
+    public function viewUserAddressList()
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
@@ -888,8 +1597,200 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
+     * Deletes an address
+     *
      * @Delete("/users/addresses.{_format}")
      * @Options("/users/addresses.{_format}")
+     *
+     * @SWG\Parameter(
+     *     name="apiKey",
+     *     in="header",
+     *     required=true,
+     *     description="Authorization with the help of jwt access token"
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="query",
+     *     description="The data is base64 encoded version of addressCode",
+     *     required=true,
+     *     type="string"
+     *  )
+     * @SWG\Response(
+     *     response=200,
+     *     description="Deleted address success response",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="DeleteAddressResponse",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="status",
+     *                  type="string",
+     *                  example="Address was deleted succesfully."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1002"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="The operation was rejected due to invalid request content provided."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=422,
+     *     description="Unprocessable Entity",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1003"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid address code provided in request."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1016"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Access Token provided in request has been expired."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=503,
+     *     description="Service Unavaliable.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="503"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Service Temporarily Unavailable"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Tag(name="Address")
      * @param Request $request
      * @return array|null
      */
@@ -929,8 +1830,205 @@ class ProfileController extends AbstractFOSRestController
     }
 
     /**
+     * Check Address is deliverable
+     *
      * @Get("/users/addresses/check-is-deliverable.{_format}")
      * @Options("/users/addresses/check-is-deliverable.{_format}")
+     *
+     * @SWG\Parameter(
+     *     name="apiKey",
+     *     in="header",
+     *     required=true,
+     *     description="Authorization with the help of jwt access token"
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="query",
+     *     description="The data is base64 encoded.",
+     *     required=true,
+     *     type="string"
+     *  )
+     * @SWG\Response(
+     *     response=200,
+     *     description="Check the location is deliverable and returns back appropriate response",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="0"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="Success"
+     *          ),
+     *          @SWG\Property(
+     *              property="detectLocationResponse",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="isDeliverable",
+     *                  type="boolean",
+     *                  example=false
+     *              ),
+     *              @SWG\Property(
+     *                  property="status",
+     *                  type="string",
+     *                  example="Sorry. The Address is not deliverable. Please try with another address or add another address"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1002"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="The operation was rejected due to invalid request content provided."
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=422,
+     *     description="Unprocessable Entity",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1004"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Invalid Restaurant Code found in request content"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Unauthorized",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="1016"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Access Token provided in request has been expired."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=500,
+     *     description="Internal Server Error",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="500"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="An error occurred on the server."
+     *              )
+     *          )
+     *      )
+     *  )
+     *  @SWG\Response(
+     *     response=503,
+     *     description="Service Unavaliable.",
+     *     @SWG\Schema(
+     *          @SWG\Property(
+     *              property="reasonCode",
+     *              type="string",
+     *              example="1"
+     *          ),
+     *          @SWG\Property(
+     *              property="reasonText",
+     *              type="string",
+     *              example="failure"
+     *          ),
+     *          @SWG\Property(
+     *              property="error",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="code",
+     *                  type="integer",
+     *                  example="503"
+     *              ),
+     *              @SWG\Property(
+     *                  property="text",
+     *                  type="string",
+     *                  example="Service Temporarily Unavailable"
+     *              )
+     *          )
+     *      )
+     *  )
+     * @SWG\Tag(name="Address")
      * @param Request $request
      * @return array|null
      */
