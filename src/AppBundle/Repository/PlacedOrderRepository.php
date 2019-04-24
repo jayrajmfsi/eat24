@@ -24,6 +24,7 @@ class PlacedOrderRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('address.completeAddress')
             ->where('placedOrder.user =:user')
             ->andWhere('address.addressType =:type')
+            ->orderBy('placedOrder.createdDateTime', 'DESC')
             ->setParameters([
                 'type' => Address::CUSTOMER_ADDRESS,
                 'user' => $customerId
