@@ -175,6 +175,7 @@ class UserApiProcessingService extends BaseService
             }
 
             $address->setAddressType(Address::CUSTOMER_ADDRESS);
+            $address->setIsActive(Address::ADDRESS_ACTIVE);
 
             $address->setCustomerId($user->getId());
             $this->entityManager->persist($address);
@@ -200,7 +201,8 @@ class UserApiProcessingService extends BaseService
                 ->validateAddressCode($content['addressCode'], $userId)
             ;
 
-            $this->entityManager->remove($address);
+
+            $address->setIsActive(Address::ADDRESS_INACTIVE);
             $this->entityManager->flush();
         } catch (BadRequestHttpException $ex) {
           throw $ex;

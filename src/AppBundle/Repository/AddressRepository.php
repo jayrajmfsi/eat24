@@ -23,9 +23,11 @@ class AddressRepository extends EntityRepository
             ->addSelect('address.nickName')
             ->where('address.customerId = :customerId')
             ->andWhere('address.addressType = :addressType')
+            ->andWhere('address.isActive =:isActive')
             ->setParameters([
                 'customerId' => $customerId,
-                'addressType' => Address::CUSTOMER_ADDRESS
+                'addressType' => Address::CUSTOMER_ADDRESS,
+                'isActive' => Address::ADDRESS_ACTIVE
             ])
         ;
 

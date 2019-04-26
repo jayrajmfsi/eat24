@@ -16,6 +16,8 @@ class Address
 {
     const CUSTOMER_ADDRESS = 'USER';
     const RESTAURANT_ADDRESS = 'RESTAURANT';
+    const ADDRESS_ACTIVE = 1;
+    const ADDRESS_INACTIVE = 0;
 
     /**
      * @var int
@@ -38,6 +40,13 @@ class Address
      * @ORM\Column(name="map_location", type="string", nullable=true)
      */
     private $mapLocation;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="is_active", type="boolean", options={"comment":"0 means inactive, 1 means active", "default":"1"})
+     */
+    private $isActive;
 
     /**
      * @var string
@@ -251,5 +260,24 @@ class Address
         $timestamp = round(microtime(true) * 1000) . mt_rand(10, 99) . '';
 
         return substr($timestamp, $count) . $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getisActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param string $isActive
+     * @return  Address
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
     }
 }
