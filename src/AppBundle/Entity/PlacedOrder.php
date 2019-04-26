@@ -92,14 +92,6 @@ class PlacedOrder
     private $finalPrice;
 
     /**
-     * @var Comment
-     *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Comment", inversedBy="placedOrderId")
-     * @ORM\JoinColumn(name="order_comment", referencedColumnName="id")
-     */
-    private $comment;
-
-    /**
      * Get id
      *
      * @return int
@@ -260,30 +252,6 @@ class PlacedOrder
     public function getFinalPrice()
     {
         return $this->finalPrice;
-    }
-
-    /**
-     * Set comment
-     *
-     * @param string $comment
-     *
-     * @return PlacedOrder
-     */
-    public function setComment(Comment $comment)
-    {
-        $this->comment = $comment;
-
-        return $this;
-    }
-
-    /**
-     * Get comment
-     *
-     * @return Comment
-     */
-    public function getComment()
-    {
-        return $this->comment;
     }
 
     /**
