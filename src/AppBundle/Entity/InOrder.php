@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  InOrder Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -96,6 +100,7 @@ class InOrder
     }
 
     /**
+     * Returns inRestaurant
      * @return InRestaurant
      */
     public function getInRestaurant()
@@ -104,6 +109,7 @@ class InOrder
     }
 
     /**
+     * Sets and returns in-order object
      * @param InRestaurant $inRestaurant
      * @return InOrder
      */
@@ -113,6 +119,4 @@ class InOrder
 
         return $this;
     }
-
 }
-

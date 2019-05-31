@@ -1,4 +1,10 @@
 <?php
+/**
+ *  Used for showing details of restaurant and its menu
+ *
+ *  @category Controller
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 
 namespace AppBundle\Controller\API\Base\Restaurant;
 
@@ -13,10 +19,16 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Swagger\Annotations as SWG;
 
+/**
+ * Restaurant Class containing all restaurant related actions
+ *
+ * Class RestaurantController
+ * @package AppBundle\Controller\API\Base\Restaurant
+ */
 class RestaurantController extends AbstractFOSRestController
 {
     /**
-     * Fetch the restaurants list with the filter applied
+     * Fetch the restaurants list with the filters applied
      *
      * @Get("/restaurants.{_format}")
      *
@@ -166,7 +178,7 @@ class RestaurantController extends AbstractFOSRestController
         $response = null;
         try {
             $utils = $this->container->get('eat24.utils');
-            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), TRUE));
+            $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), true));
             // Validating the request content.
             $validationResult = $this->container->get('eat24.restaurant_api_validate_service')
                 ->parseFilterRestaurantRequest($content)
@@ -182,7 +194,7 @@ class RestaurantController extends AbstractFOSRestController
             ;
             // Creating final response Array to be released from API Controller.
             $response = $this->container->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('RestaurantDetailsResponse', $result['data']);
+                ->createUserApiSuccessResponse('RestaurantDetailsResponse', $result['data'])
             ;
         } catch (AccessDeniedHttpException $ex) {
             throw $ex;
@@ -405,7 +417,7 @@ class RestaurantController extends AbstractFOSRestController
      * @param Request $request
      * @return array
      */
-    public function showMenu(Request $request)
+    public function showRestaurantMenu(Request $request)
     {
         $logger = $this->container->get('monolog.logger.exception');
         // $response to be returned from API.
@@ -421,9 +433,12 @@ class RestaurantController extends AbstractFOSRestController
             $result = $this->container->get('eat24.restaurant_api_processing_service')
                 ->processMenuListRequest($validationResult['response']['restaurant'])
             ;
-            // Creating final response Array to be released from API Controller.
+            // Creating final response array to be released from API Controller.
             $response = $this->container->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('RestaurantDetailsResponse', $result['data']);
+                ->createUserApiSuccessResponse(
+                    'RestaurantDetailsResponse',
+                    $result['data']
+                )
             ;
         } catch (AccessDeniedHttpException $ex) {
             throw $ex;

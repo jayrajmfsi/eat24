@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Cuisine Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -34,7 +38,12 @@ class Cuisine
      */
     private $restaurants;
 
-    public function __construct() {
+    /**
+     * Setting restaurants collection
+     * Cuisine constructor.
+     */
+    public function __construct()
+    {
         $this->restaurants = new \Doctrine\Common\Collections\ArrayCollection();
     }
     /**
@@ -71,4 +80,3 @@ class Cuisine
         return $this->name;
     }
 }
-

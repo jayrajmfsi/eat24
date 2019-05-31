@@ -1,6 +1,6 @@
 <?php
 /**
- *  General Constants file for Storing General Message codes and Message Text for Application.
+ *  General Constants file for Storing General Message Text for Application.
  *
  *  @category Constants
  */

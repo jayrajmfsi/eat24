@@ -3,11 +3,17 @@
  *  Service Class for Creating API Request Response.
  *
  *  @category Service
+ *  @author <jayraja@mindfiresolutions.com>
  */
 namespace AppBundle\Service;
 
 use AppBundle\Constants\ErrorConstants;
 
+/**
+ * Setting the failure or success api response
+ * Class ApiResponse
+ * @package AppBundle\Service
+ */
 class ApiResponse extends BaseService
 {
     /**
@@ -19,7 +25,7 @@ class ApiResponse extends BaseService
      */
     public function createApiErrorResponse($errorCode)
     {
-        $response = [
+        return [
             'Response' => [
                 'reasonCode' => '1',
                 'reasonText' => $this->translator->trans('api.response.failure.message'),
@@ -30,8 +36,6 @@ class ApiResponse extends BaseService
                 ],
             ]
         ];
-
-        return $response;
     }
 
     /**

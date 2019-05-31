@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  InOrder Repository
+ *  @category Repository
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Repository;
 
 /**
@@ -10,6 +14,11 @@ namespace AppBundle\Repository;
  */
 class InOrderRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Fetch order item details
+     * @param $orderId
+     * @return array
+     */
     public function fetchOrderItemDetails($orderId)
     {
         $qb = $this->createQueryBuilder('inOrder')

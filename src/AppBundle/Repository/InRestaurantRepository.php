@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  InRestaurant Repository
+ *  @category Repository
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\InRestaurant;
@@ -12,6 +16,11 @@ use AppBundle\Entity\InRestaurant;
  */
 class InRestaurantRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Fetch menu items for the particular restaurant
+     * @param $restaurantId
+     * @return array
+     */
     public function fetchMenuItems($restaurantId)
     {
         $qb = $this->createQueryBuilder('in_restaurant')

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Restaurant Repository
+ *  @category Repository
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Address;
@@ -41,6 +45,7 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      *  Function to add Filter and Sort parameters to List Query Builder.
+     *  adding Filters to QueryBuilder
      *
      *  @param QueryBuilder $qb
      *  @param array $filter
@@ -53,28 +58,33 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
     {
         $params = [];
 
-        // Adding Filters to QueryBuilder
+        // check if restaurant name pattern matches with restaurants in db
         if (isset($filter['restaurantName'])) {
             $qb->where('r.name LIKE :restaurant');
             $params['restaurant'] = '%'.$filter['restaurantName'].'%';
         }
 
+        // check if latitude and longitude filters are set
         if (isset($filter['latitude']) && isset($filter['longitude'])) {
+            // create a geo-point using them
             $geoPoint = new Point($filter['latitude'], $filter['longitude']);
+
+            // join the address and fetch the restaurants according to the point entered as input
             $qb->join('AppBundle:Address', 'a', Join::WITH, 'a.customerId = r.id AND a.addressType=:type');
             $qb->andWhere('ST_DISTANCE_SPHERE(a.geoPoint, POINT_STR(:point)) / 1000 <='.$restaurantRange);
             $params['type'] = Address::RESTAURANT_ADDRESS;
             $params['point'] = $geoPoint;
         }
 
+        // list all restaurant according to the cuisines entered
         if (isset($filter['cuisine'])) {
             $qb->join('r.cuisines', 'c');
             $qb->andWhere('c.name=:cuisine');
             $params['cuisine'] = $filter['cuisine'];
         }
 
-        // Adding Sorting to QueryBuilder
-        if (isset(Restaurant::$allowedSortingAttributesMap[$requestContent['sort'][0]])) {
+        // applying sorting to QueryBuilder
+        if (isset(Restaurant::$allowedSortingAttributesMap[$sort[0]])) {
             $qb->addOrderBy('r.'. Restaurant::$allowedSortingAttributesMap[$sort[0]], $sort[1]);
         } else {
             $qb->addOrderBy('r.'.Restaurant::$allowedSortingAttributesMap['restaurantRating'], 'DESC');
@@ -97,10 +107,8 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
      */
     public function countUserRecords($restaurantRange = 10, $filter = [], $sort = [])
     {
-        $qb = $this
-            ->createQueryBuilder('r')
-            ->select('count(r.id) as totalRecords')
-        ;
+        // count the total records
+        $qb = $this->createQueryBuilder('r')->select('count(r.id) as totalRecords');
 
         // Applying Filters.
         $qb = $this->addFilterSortParameters($qb, $restaurantRange, $filter, $sort);

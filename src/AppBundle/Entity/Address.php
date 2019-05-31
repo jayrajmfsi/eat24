@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Address Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Utils\Point;
@@ -44,7 +48,8 @@ class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="is_active", type="boolean", options={"comment":"0 means inactive, 1 means active", "default":"1"})
+     * @ORM\Column(name="is_active", type="boolean",
+     *     options={"comment":"0 means inactive, 1 means active", "default":"1"})
      */
     private $isActive;
 
@@ -242,6 +247,7 @@ class Address
     }
 
     /**
+     * Saving the unique code before persisting
      * @ORM\PrePersist()
      */
     public function beforeSave()
@@ -265,7 +271,7 @@ class Address
     /**
      * @return string
      */
-    public function getisActive()
+    public function getIsActive()
     {
         return $this->isActive;
     }

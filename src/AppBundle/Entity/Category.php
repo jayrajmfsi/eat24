@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Category Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -63,4 +67,3 @@ class Category
         return $this->name;
     }
 }
-

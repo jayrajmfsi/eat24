@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Category Repository
+ *  @category Repository
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Repository;
 
 /**

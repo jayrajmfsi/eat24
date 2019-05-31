@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  PlacedOrder Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -102,6 +106,7 @@ class PlacedOrder
     }
 
     /**
+     * Saving the unique code before persisting
      * @ORM\PrePersist()
      */
     public function beforeSave()
@@ -311,6 +316,7 @@ class PlacedOrder
     }
 
     /**
+     * sets address
      * @param Address $address
      * @return PlacedOrder
      */
@@ -322,6 +328,7 @@ class PlacedOrder
     }
 
     /**
+     * gets address
      * @return Address
      */
     public function getAddress()

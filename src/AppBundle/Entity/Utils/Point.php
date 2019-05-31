@@ -1,7 +1,15 @@
 <?php
-
+/**
+ *  Class for setting and getting point data type objects
+ *  @category utility
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity\Utils;
 
+/**
+ * Class Point
+ * @package AppBundle\Entity\Utils
+ */
 class Point
 {
     /**
@@ -25,6 +33,7 @@ class Point
     }
 
     /**
+     * Get Latitude
      * @return float
      */
     public function getLatitude()
@@ -33,6 +42,7 @@ class Point
     }
 
     /**
+     * Get Longitude
      * @return float
      */
     public function getLongitude()
@@ -40,7 +50,12 @@ class Point
         return $this->longitude;
     }
 
-    public function __toString() {
+    /**
+     * String representation of object
+     * @return string
+     */
+    public function __toString()
+    {
         //Output from this is used with POINT_STR in DQL so must be in specific format
         return sprintf('POINT(%f %f)', $this->longitude, $this->latitude);
     }

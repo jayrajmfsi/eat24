@@ -14,6 +14,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * Class Utils
+ * @package AppBundle\Service
+ */
 class Utils extends BaseService
 {
     /**
@@ -58,8 +62,10 @@ class Utils extends BaseService
                 $arrayContent[trim($key)] = is_string($value)
                     ? ((empty($value = trim($value)) && $value !== "0")
                         ? null
-                        : htmlspecialchars($value, ENT_QUOTES, 'UTF-8')) // Handling Html input
-                    : htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); // for XSS Prevention
+                        // Handling Html input
+                        : htmlspecialchars($value, ENT_QUOTES, 'UTF-8'))
+                    // for XSS Prevention
+                    : htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
                 // Removing non-trimmed Keys From Array.
                 if ((string)trim($key) !== (string)$key) {
@@ -85,14 +91,16 @@ class Utils extends BaseService
     {
         // Checking the Object and Class Name Provided
         if (!empty($object) && !$object instanceof $className) {
-            throw new \Exception('Invalid parameters provided to function '.__FUNCTION__);
+            $this->logger->error('Invalid parameters provided to function '.__FUNCTION__);
+            throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
         }
 
         if (empty($object)) {
             $resourceClass = new \ReflectionClass($className);
             if (!$resourceClass->isInstantiable()) {
-                throw new \Exception($className. ' class name passed to function '.__FUNCTION__.
+                $this->logger->error($className. ' class name passed to function '.__FUNCTION__.
                     ' is not instantiable');
+                throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
             }
 
             $object = $resourceClass->newInstance();
@@ -100,12 +108,14 @@ class Utils extends BaseService
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-        // filling Array data to Object.
-        // Note: All the properties of the class should be should be available
-        // to be set by Setters.
+        /**
+         * filling Array data to Object.
+         * all the properties of the class should be should be available to be set by Setters.
+         */
         foreach ($data as $attribute => $value) {
             if (!$propertyAccessor->isWritable($object, $attribute)) {
-                throw new \Exception('Invalid array data provided to function '. __FUNCTION__);
+                $this->logger->error('Invalid array data provided to function '. __FUNCTION__);
+                throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
             }
             $propertyAccessor->setValue($object, $attribute, $value);
         }
@@ -141,6 +151,11 @@ class Utils extends BaseService
         return $validateResult;
     }
 
+    /**
+     * Check if code exists in db
+     * @param $reference
+     * @return \AppBundle\Entity\Restaurant|object|null
+     */
     public function validateRestaurantCode($reference)
     {
         $restaurant = $this->entityManager->getRepository('AppBundle:Restaurant')
@@ -152,11 +167,16 @@ class Utils extends BaseService
         return $restaurant;
     }
 
+    /**
+     * Check code exists in db
+     * @param $addressCode
+     * @param $userId
+     * @return mixed
+     */
     public function validateAddressCode($addressCode, $userId)
     {
         try {
-            $address = $this->entityManager->getRepository('AppBundle:Address')
-                ->getAddress($userId, $addressCode);
+            $address = $this->entityManager->getRepository('AppBundle:Address')->getAddress($userId, $addressCode);
 
             if (!$address) {
                 throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_ADDRESS_CODE);

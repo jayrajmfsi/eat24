@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Cuisine Repository
+ *  @category Repository
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Repository;
 
 /**

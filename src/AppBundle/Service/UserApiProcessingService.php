@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *
+ *  @category Service
+ *  @author <jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Service;
 
 use AppBundle\Constants\ErrorConstants;
@@ -81,8 +85,11 @@ class UserApiProcessingService extends BaseService
             /** @var User $user */
             $user = $userManipulator
                 ->create(
-                    $data['username'], $data['password'],
-                    $data['email'], true, false
+                    $data['username'],
+                    $data['password'],
+                    $data['email'],
+                    true,
+                    false
                 );
             if (!empty($data['contactNumber'])) {
                 $user->setContactNumber((int)$data['contactNumber']);

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  MenuItem Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -8,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * MenuItem
  *
  * @ORM\Table(name="menu_item")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\MenuItemRepository")
+ * @ORM\Entity()
  */
 class MenuItem
 {
@@ -118,7 +122,7 @@ class MenuItem
      *
      * @return boolean
      */
-    public function getIsVeg()
+    public function isVeg()
     {
         return $this->isVeg;
     }

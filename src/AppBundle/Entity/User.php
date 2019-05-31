@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  User Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;

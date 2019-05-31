@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  InRestaurant Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -67,6 +71,10 @@ class InRestaurant
      */
     private $restaurant;
 
+    /**
+     * Saving the unique code before persisting
+     * @ORM\PrePersist()
+     */
     public function beforeSave()
     {
         $this->itemReference = Address::generateUniqueId($this->id);
@@ -112,7 +120,7 @@ class InRestaurant
      *
      * @return InRestaurant
      */
-    public function setActive($active)
+    public function setIsActive($active)
     {
         $this->active = $active;
 
@@ -124,7 +132,7 @@ class InRestaurant
      *
      * @return bool
      */
-    public function getActive()
+    public function isActive()
     {
         return $this->active;
     }
@@ -202,6 +210,7 @@ class InRestaurant
     }
 
     /**
+     * Returns item reference
      * @return string
      */
     public function getItemReference()
@@ -210,6 +219,7 @@ class InRestaurant
     }
 
     /**
+     * Sets the item reference
      * @param string $itemReference
      */
     public function setItemReference($itemReference)

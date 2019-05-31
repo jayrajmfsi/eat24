@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  PlacedOrder Repository
+ *  @category Repository
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Address;
@@ -12,6 +16,11 @@ use AppBundle\Entity\Address;
  */
 class PlacedOrderRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * fetch orders for the user
+     * @param $customerId
+     * @return array
+     */
     public function fetchOrders($customerId)
     {
         $qb = $this->createQueryBuilder('placedOrder')

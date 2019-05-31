@@ -3,6 +3,7 @@
  *  Request Listener for handling Authentication and Logging of Requests received by Application.
  *
  *  @category EventListener
+ *  @author <jayraja@mindfiresolutions.com>
  */
 
 namespace AppBundle\EventListener;
@@ -13,6 +14,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use AppBundle\Service\BaseService;
 
+/**
+ * Listeners class for logging and authenticating requests
+ * Class RequestListener
+ * @package AppBundle\EventListener
+ */
 class RequestListener extends BaseService
 {
     /**
@@ -31,21 +37,21 @@ class RequestListener extends BaseService
     }
 
     /**
-     *  Function for api request authorization.
+     *  Function for api request authorization and logging.
      *
      *  @param GetResponseEvent $event
      *
-     *  @return boolean
+     *  @return mixed
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
 
-        // Checking the route hit by request is topps API route or not.
+        // fetching the route
         $route = $request->attributes->get('_route');
 
         $this->setRequestContent($request);
-//        dump($request->headers->all());exit();
+
         // Checking if request is not for APIs.
         if (false === strpos($route, 'api_v')) {
             return true;
@@ -62,6 +68,7 @@ class RequestListener extends BaseService
         // Checking if Request Method is OPTIONS.
         if (Request::METHOD_OPTIONS === $request->getMethod()) {
             $event->setResponse(new JsonResponse(['status' => true]));
+
             return true;
         }
 
@@ -92,11 +99,20 @@ class RequestListener extends BaseService
     private function setRequestContent(Request $request)
     {
         $content = $request->getContent();
-
+        // check if http verb is get or delete then decode the request to make it similar to a post parameters request
         if (($request->isMethod('GET') || $request->isMethod('DELETE')) && empty($content)) {
+
             $content = base64_decode($request->get('data'));
-            $request->initialize($request->query->all(), array(), $request->attributes->all(),
-                $request->cookies->all(), array(), $request->server->all(), $content);
+
+            $request->initialize(
+                $request->query->all(),
+                array(),
+                $request->attributes->all(),
+                $request->cookies->all(),
+                array(),
+                $request->server->all(),
+                $content
+            );
             $request->headers->set('Content-Length', strlen($content));
         }
 

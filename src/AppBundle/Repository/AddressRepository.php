@@ -1,9 +1,12 @@
 <?php
-
+/**
+ *  Address Repository
+ *  @category Repository
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Address;
-use AppBundle\Entity\Utils\Point;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -14,6 +17,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class AddressRepository extends EntityRepository
 {
+    /**
+     * List user address  which are active and having the user as provided
+     * @param $customerId
+     * @return array
+     */
     public function listUserAddress($customerId)
     {
         $qb = $this->createQueryBuilder('address')
@@ -34,6 +42,14 @@ class AddressRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
+    /**
+     * Fetch user address according to the address code provided
+     * @param $customerId
+     * @param $addressCode
+     * @param string $addressType
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getAddress($customerId, $addressCode, $addressType = Address::CUSTOMER_ADDRESS)
     {
         $qb = $this->createQueryBuilder('address')
@@ -46,6 +62,13 @@ class AddressRepository extends EntityRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * Check distance of a geopoint with a particular restaurant
+     * @param $geoPoint
+     * @param $restaurantId
+     * @param $range
+     * @return array
+     */
     public function checkDeliveryLocation($geoPoint, $restaurantId, $range)
     {
         $qb = $this->createQueryBuilder('address')
@@ -62,4 +85,3 @@ class AddressRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 }
-

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Validate and parse the restaurant apis request
+ *  @category Service
+ *  @author <jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Service;
 
 use AppBundle\Constants\ErrorConstants;
@@ -8,8 +12,17 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
+/**
+ * Class RestaurantApiValidatingService
+ * @package AppBundle\Service
+ */
 class RestaurantApiValidatingService extends BaseService
 {
+    /**
+     * Check the filter restaurant request
+     * @param $requestContent
+     * @return mixed
+     */
     public function parseFilterRestaurantRequest($requestContent)
     {
         $validateResult['status'] = false;
@@ -31,7 +44,7 @@ class RestaurantApiValidatingService extends BaseService
             if (!empty($requestContent['filter']['cuisine'])) {
                 $content['filter']['cuisine'] = $requestContent['filter']['cuisine'];
             }
-            // Validating the Sort attributes.
+            // Validating the sort attributes.
             if (
                 !empty($requestContent['sort'])
                 &&  2 === count($requestContent['sort'])
@@ -43,14 +56,13 @@ class RestaurantApiValidatingService extends BaseService
                     : 'ASC'
                 ;
             }
-
+            // check if pagination is set in request else set it to default
             $content['pagination'] = $this->validatePaginationArray($requestContent['pagination']);
             if (!empty($content)) {
                 $validateResult['message']['response'] = [
                     'content' => $content
                 ];
             }
-
 
             $validateResult['status'] = true;
         } catch (BadRequestHttpException $ex) {
@@ -74,21 +86,23 @@ class RestaurantApiValidatingService extends BaseService
     {
         $validateResult = [];
         // Validating the pagination parameters.
-        $validateResult['page'] = (empty($pagination['page'])
-            || !ctype_digit($pagination['page'])
-            || $pagination['page'] < 1)
-            ? 1
+        $validateResult['page'] =
+            (empty($pagination['page']) || !ctype_digit($pagination['page']) || $pagination['page'] < 1) ? 1
             : $pagination['page']
         ;
-        $validateResult['limit'] = (empty($pagination['limit'])
-            || !ctype_digit($pagination['limit'])
-            || $pagination['limit'] < 1)
-            ? 10
+        $validateResult['limit'] =
+            (empty($pagination['limit']) || !ctype_digit($pagination['limit']) || $pagination['limit'] < 1) ? 10
             : $pagination['limit']
         ;
+
         return $validateResult;
     }
 
+    /**
+     * Validate list menu request
+     * @param $requestContent
+     * @return mixed
+     */
     public function validateListMenuRequest($requestContent)
     {
         $validateResult['status'] = false;
@@ -99,7 +113,7 @@ class RestaurantApiValidatingService extends BaseService
             ) {
                 throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
-
+            // check restaurant code
             $restaurant = $this->entityManager->getRepository('AppBundle:Restaurant')
                 ->findOneBy(['reference' => $requestContent['RestaurantMenuRequest']['restaurantCode']])
             ;

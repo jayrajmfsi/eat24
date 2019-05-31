@@ -1,11 +1,15 @@
 <?php
-
+/**
+ *  Restaurant Entity
+ *  @category Entity
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Restaurant
+ * Restaurant Table
  *
  * @ORM\Table(name="restaurant")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RestaurantRepository")
@@ -13,6 +17,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Restaurant
 {
+    /**
+     * sort array used for filtering restaurants
+     * @var array
+     */
     public static $allowedSortingAttributesMap = [
         'cost' => 'cost',
         'recentlyAdded' => 'createdDateTime',
@@ -40,7 +48,12 @@ class Restaurant
      */
     private $cuisines;
 
-    public function __construct() {
+    /**
+     * set cuisines collection
+     * Restaurant constructor.
+     */
+    public function __construct()
+    {
         $this->cuisines = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -87,6 +100,11 @@ class Restaurant
         return $this->id;
     }
 
+    /**
+     * Add cuisine
+     * @param Cuisine $cuisine
+     * @return $this
+     */
     public function addCuisine(Cuisine $cuisine)
     {
         $this->cuisines[] = $cuisine;
@@ -94,6 +112,10 @@ class Restaurant
         return $this;
     }
 
+    /**
+     * Remove cuisine
+     * @param Cuisine $cuisine
+     */
     public function removeCuisine(Cuisine $cuisine)
     {
         $this->cuisines->removeElement($cuisine);
@@ -110,6 +132,7 @@ class Restaurant
     }
 
     /**
+     * Set name
      * @param string string
      */
     public function setName($name)
@@ -118,6 +141,7 @@ class Restaurant
     }
 
     /**
+     * get name
      * @return string
      */
     public function getName()
@@ -175,6 +199,7 @@ class Restaurant
 
 
     /**
+     * Saving the unique code before persisting
      * @ORM\PrePersist()
      */
     public function beforeSave()

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Validate user apis
+ *  @category Service
+ *  @author <jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Service;
 
 use AppBundle\Constants\ErrorConstants;
@@ -10,6 +14,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
+/**
+ * Class UserApiValidationService
+ * @package AppBundle\Service
+ */
 class UserApiValidationService extends BaseService
 {
     /**
@@ -87,8 +95,9 @@ class UserApiValidationService extends BaseService
             $this->validateUserName($requestContent['UserRequest']['username']);
             // Validating Email
             $this->validateEmail($requestContent['UserRequest']['emailId']);
-
+            // validate user password
             $this->validatePassword($requestContent['UserRequest']['password']);
+            // validate recipient
             $this->validatePhoneNumber($requestContent['UserRequest']['phoneNumber'], $user);
 
             $validateResult['status'] = true;
@@ -108,6 +117,11 @@ class UserApiValidationService extends BaseService
         return $validateResult;
     }
 
+    /**
+     * Validate update user request
+     * @param $requestContent
+     * @return mixed
+     */
     public function validateUpdateUserRequest($requestContent)
     {
         $validateResult['status'] = false;
@@ -123,10 +137,11 @@ class UserApiValidationService extends BaseService
             if (!empty($requestContent['UserRequest']['username'])) {
                 $this->validateUserName($requestContent['UserRequest']['username'], $user);
             }
-
+            // validate phone-number
             if (!empty($requestContent['UserRequest']['phoneNumber'])) {
                 $this->validatePhoneNumber($requestContent['UserRequest']['phoneNumber'], $user);
             }
+            // validate old password
             if (!empty($requestContent['UserRequest']['oldPassword'])) {
 
                 if (empty($requestContent['UserRequest']['password'])
@@ -134,18 +149,16 @@ class UserApiValidationService extends BaseService
                     || $requestContent['UserRequest']['confirmPassword'] > 100
                     || $requestContent['UserRequest']['password'] > 100
                 ) {
-                    throw new BadRequestHttpException(ErrorConstants::INVALID_NEW_PASSWORD_FORMAT);
+                    throw new BadRequestHttpException(ErrorConstants::INVALID_NEW_PASS_FORMAT);
                 }
 
                 if ($requestContent['UserRequest']['password'] != $requestContent['UserRequest']['confirmPassword']) {
-                    throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_CONFIRM_PASSWORD);
+                    throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_CONFIRM_PASS);
                 }
                 $this->validateChangePasswordRequest($requestContent['UserRequest']['oldPassword']);
             }
 
-            $validateResult['message']['response'] = [
-                'user' => $user,
-            ];
+            $validateResult['message']['response'] = ['user' => $user];
 
             $validateResult['status'] = true;
         } catch (AccessDeniedHttpException $ex) {
@@ -206,7 +219,7 @@ class UserApiValidationService extends BaseService
     {
         // Checking the format of Password.
         if (strlen($password) > 100) {
-            throw new BadRequestHttpException(ErrorConstants::INVALID_NEW_PASSWORD_FORMAT);
+            throw new BadRequestHttpException(ErrorConstants::INVALID_NEW_PASS_FORMAT);
         }
     }
 
@@ -235,10 +248,9 @@ class UserApiValidationService extends BaseService
                         ),
                 ])
             ;
-            // Checking
-            // if the Old Password provided is valid or not.
+            // Checking if the Old Password provided is valid or not.
             if (empty($user)) {
-                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_OLD_PASSWORD);
+                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_OLD_PASS);
             }
 
             $validateResult['status'] = true;
@@ -269,14 +281,11 @@ class UserApiValidationService extends BaseService
             throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_USERNAME);
         }
 
-        $previousUser = $this->serviceContainer
-            ->get('fos_user.user_manager')
-            ->findUserByUsername($userName)
-        ;
+        $previousUser = $this->serviceContainer->get('fos_user.user_manager')->findUserByUsername($userName);
 
         // Checking if UserName is already taken by someone.
         if (!empty($previousUser) && (empty($user) || $user->getId() !== $previousUser->getId())) {
-            throw new ConflictHttpException( ErrorConstants::USERNAME_EXISTS);
+            throw new ConflictHttpException(ErrorConstants::USERNAME_EXISTS);
         }
     }
 
@@ -334,6 +343,11 @@ class UserApiValidationService extends BaseService
         return $emailUser;
     }
 
+    /**
+     * Validate delete address request
+     * @param $requestContent
+     * @return mixed
+     */
     public function validateDeleteAddressRequest($requestContent)
     {
         $validatedResult['status'] = false;
@@ -353,6 +367,12 @@ class UserApiValidationService extends BaseService
         return $validatedResult;
     }
 
+    /**
+     * validate update address request
+     * @param $requestContent
+     * @param bool $isUpdate
+     * @return mixed
+     */
     public function validateAddUpdateAddressRequest($requestContent, $isUpdate = false)
     {
         $validateResult['status'] = false;
@@ -364,7 +384,7 @@ class UserApiValidationService extends BaseService
                 ) {
                     throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
                 }
-
+                // check address code
                 $address = $this->serviceContainer->get('eat24.utils')
                     ->validateAddressCode(
                         $requestContent['UserDeliveryAddressRequest']['addressCode'],
@@ -405,15 +425,22 @@ class UserApiValidationService extends BaseService
         return $validateResult;
     }
 
+    /**
+     * Check delivery location
+     * @param $requestContent
+     * @return mixed
+     */
     public function validateCheckDeliveryLocationRequest($requestContent)
     {
         $validatedResult['status'] = false;
         try {
+            // if format is not as expected
             if (empty($requestContent['detectLocationRequest'])
                 || empty($requestContent['detectLocationRequest']['restaurantCode'])
             ) {
                 throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
             }
+            // check restaurant code for checking if location is deliverable
             $restaurant = $this->serviceContainer->get('eat24.utils')
                 ->validateRestaurantCode($requestContent['detectLocationRequest']['restaurantCode'])
             ;
@@ -426,9 +453,15 @@ class UserApiValidationService extends BaseService
             $this->logger->error(__FUNCTION__.' Function failed due to Error :'. $exception->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
         }
+
         return $validatedResult;
     }
 
+    /**
+     * Validate create order request
+     * @param $requestContent
+     * @return mixed
+     */
     public function validateCreateOrderRequest($requestContent)
     {
         $validatedResult['status'] = false;
@@ -443,9 +476,11 @@ class UserApiValidationService extends BaseService
                throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
            }
 
+           // check order-items
            foreach ($requestContent['orderRequest']['orderItems'] as $orderItem) {
                $this->validateOrderItemsRequest($orderItem);
            }
+           // check restaurant code
            $restaurant = $this->serviceContainer->get('eat24.utils')
                ->validateRestaurantCode($requestContent['orderRequest']['restaurantCode'])
            ;
@@ -470,11 +505,13 @@ class UserApiValidationService extends BaseService
        return $validatedResult;
     }
 
+    /**
+     * check if format of request is correct
+     * @param $orderItem
+     */
     public function validateOrderItemsRequest($orderItem)
     {
-        if (empty($orderItem['name'])
-            || !(int)($orderItem['quantity'])
-            || empty($orderItem['code'])
+        if (empty($orderItem['name']) || !(int)($orderItem['quantity']) || empty($orderItem['code'])
         ) {
             throw new BadRequestHttpException(ErrorConstants::INVALID_REQ_DATA);
         }

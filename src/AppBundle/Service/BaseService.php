@@ -4,6 +4,7 @@
  *  This Service class should be extended as parent Service to the custom Application Service.
  *
  *  @category Service
+ *  @author <jayraja@mindfiresolutions.com>
  */
 
 namespace AppBundle\Service;
@@ -14,6 +15,10 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
+/**
+ * Class BaseService
+ * @package AppBundle\Service
+ */
 abstract class BaseService
 {
     /**
@@ -37,6 +42,7 @@ abstract class BaseService
     protected $translator;
 
     /**
+     * Get service container
      * @return ContainerInterface
      */
     public function getServiceContainer(): ContainerInterface
@@ -45,6 +51,7 @@ abstract class BaseService
     }
 
     /**
+     * Get entity manager
      * @return EntityManager
      */
     public function getEntityManager(): EntityManager
@@ -53,6 +60,7 @@ abstract class BaseService
     }
 
     /**
+     * get logger
      * @return LoggerInterface
      */
     public function getLogger(): LoggerInterface
@@ -61,6 +69,7 @@ abstract class BaseService
     }
 
     /**
+     * get translator
      * @return TranslatorInterface
      */
     public function getTranslator(): TranslatorInterface
@@ -69,6 +78,7 @@ abstract class BaseService
     }
 
     /**
+     * set service container
      * @param ContainerInterface $serviceContainer
      */
     public function setServiceContainer(ContainerInterface $serviceContainer): void
@@ -77,6 +87,7 @@ abstract class BaseService
     }
 
     /**
+     * set entity manager
      * @param EntityManager $entityManager
      */
     public function setEntityManager(EntityManager $entityManager): void
@@ -85,6 +96,7 @@ abstract class BaseService
     }
 
     /**
+     * set logger
      * @param LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger): void
@@ -93,6 +105,7 @@ abstract class BaseService
     }
 
     /**
+     * set translator
      * @param TranslatorInterface $translator
      */
     public function setTranslator(TranslatorInterface $translator): void

@@ -1,9 +1,9 @@
 <?php
 /**
- *  AuthenticateAuthorize Service to handle Authentication and Authorization
- *  Related tasks.
+ *  AuthenticateAuthorize Service to handle Authentication and Authorization related tasks
  *
  *  @category Service
+ *  @author <jayraja@mindfiresolutions.com>
  */
 
 namespace AppBundle\Service;
@@ -20,6 +20,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
+/**
+ * Class AuthenticateAuthorize
+ * @package AppBundle\Service
+ */
 class AuthenticateAuthorize extends BaseService
 {
     /**
@@ -65,7 +69,7 @@ class AuthenticateAuthorize extends BaseService
             }
 
             // Checking That access_token must be used in API Calls.
-            if (    !$token->hasClaim('grant_type') ||  !$token->hasClaim('emailId')
+            if (!$token->hasClaim('grant_type') ||  !$token->hasClaim('emailId')
                 ||  GeneralConstants::ACCESS_TOKEN_GRANT !== $token->getClaim('grant_type')
             ) {
                 throw new UnauthorizedHttpException(null, ErrorConstants::INVALID_AUTH_TOKEN);
@@ -88,32 +92,31 @@ class AuthenticateAuthorize extends BaseService
                 $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
         }
+
         return $authenticateResult;
     }
 
-    /**
-     *  Function to return User Object from email input.
-     *
-     *  @param string $email
-     *  @param string $password (default = null)
-     *
-     *  @return User $user
-     */
-    public function getUser($email, $password = null)
-    {
-        $userManager = $this->serviceContainer->get('fos_user.user_manager');
+        /**
+         *  Function to return User Object from email input.
+         *
+         *  @param string $email
+         *  @param string $password (default = null)
+         *
+         *  @return User $user
+         */
+        public function getUser($email, $password = null)
+        {
+            $userManager = $this->serviceContainer->get('fos_user.user_manager');
 
-        $params = [
-            'email' => $email,
-        ];
+            $params = ['email' => $email];
 
-        // Checking if password is set then adding the password to the params.
-        if (!empty($password)) {
-            $params['password'] = $password;
+            // Checking if password is set then adding the password to the params.
+            if (!empty($password)) {
+                $params['password'] = $password;
+            }
+
+            return $userManager->findUserBy($params);
         }
-
-        return $userManager->findUserBy($params);
-    }
 
     /**
      *  Function to process OAuth Request and
@@ -128,19 +131,24 @@ class AuthenticateAuthorize extends BaseService
         $processingResult['status'] = false;
         try {
             $credentials = $requestContent['credentials'];
-
+            // check user's username and password
             $validationResult = $this->validateUserCredentials($credentials);
 
             // Fetching returned User object on Success Case.
             $user = $validationResult['message']['user'];
 
-            $accessTokenResult = $this->createJWTForUser($user,
+            // create jwt access and refresh token
+            $accessTokenResult = $this->createJWTForUser(
+                $user,
                 $this->serviceContainer->getParameter('api_access_token_expiry'),
-                GeneralConstants::ACCESS_TOKEN_GRANT);
+                GeneralConstants::ACCESS_TOKEN_GRANT
+            );
 
-            $refreshTokenResult = $this->createJWTForUser($user,
+            $refreshTokenResult = $this->createJWTForUser(
+                $user,
                 $this->serviceContainer->getParameter('api_refresh_token_expiry'),
-                GeneralConstants::REFRESH_TOKEN_GRANT);
+                GeneralConstants::REFRESH_TOKEN_GRANT
+            );
 
             // Creating Response Array to be returned.
             $response = [
@@ -158,6 +166,7 @@ class AuthenticateAuthorize extends BaseService
                 $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
         }
+
         return $processingResult;
     }
 
@@ -178,7 +187,7 @@ class AuthenticateAuthorize extends BaseService
             $signer = new Sha256();
             // Checking If Token passed in API Request Header is valid OR not.
             if (!$token->verify($signer, base64_decode($this->serviceContainer->getParameter('api_secret')))) {
-                throw new UnprocessableEntityHttpException( ErrorConstants::INVALID_REFRESH_TOKEN);
+                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_REFRESH_TOKEN);
             }
 
             // Checking if Token is Expired.
@@ -188,16 +197,16 @@ class AuthenticateAuthorize extends BaseService
 
             // Checking That Refresh token passed must have refresh_token grant_type
             if (GeneralConstants::REFRESH_TOKEN_GRANT !== $token->getClaim('grant_type')) {
-                throw new UnprocessableEntityHttpException( ErrorConstants::INVALID_REFRESH_TOKEN);
+                throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_REFRESH_TOKEN);
             }
 
             // Creating Access Token for User
-            $accessTokenResult = $this
-                ->createJWTForUser(
-                    $this->getUser($token->getClaim('emailId')),
-                    $this->serviceContainer->getParameter('api_access_token_expiry'),
+            $accessTokenResult = $this->createJWTForUser(
+                $this->getUser($token->getClaim('emailId')),
+                $this->serviceContainer->getParameter('api_access_token_expiry'),
                 GeneralConstants::ACCESS_TOKEN_GRANT
-                );
+            );
+
             $processResult['message']['response'] = [
                 'accessToken' => $accessTokenResult['message']['token']
             ];
@@ -209,6 +218,7 @@ class AuthenticateAuthorize extends BaseService
                 $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
         }
+
         return $processResult;
     }
 
@@ -228,13 +238,10 @@ class AuthenticateAuthorize extends BaseService
             if (empty($user)) {
                 throw new UnprocessableEntityHttpException(ErrorConstants::INVALID_CRED);
             }
+            // fetch encoder service to encode password
+            $encoder = $this->serviceContainer->get('security.encoder_factory')->getEncoder($user);
 
-            $encoder = $this->serviceContainer
-                ->get('security.encoder_factory')
-                ->getEncoder($user)
-            ;
-
-            if(!$user->isEnabled()) {
+            if (!$user->isEnabled()) {
                 throw new UnprocessableEntityHttpException(ErrorConstants::DISABLEDUSER);
             }
 
@@ -270,15 +277,24 @@ class AuthenticateAuthorize extends BaseService
         try {
             $signer = new Sha256();
             $token = (new Builder())
-                ->setIssuedAt(time())// Configures the time that the token was issue (iat claim)
-                ->setNotBefore(time() + 5)// Configures the time that the token can be used (nbf claim)
-                ->setExpiration(time() + $expiry)// Configures the expiration time ($expiry for this case) of the token (exp claim)
-                ->set('emailId', $user->getEmail())//  Creating Claim email
-                ->set('grant_type', $grantType)// Grant Type (Either access_token OR refresh_token)
+                // Configures the time that the token was issue (iat claim)
+                ->setIssuedAt(time())
+                // Configures the time that the token can be used (nbf claim)
+                ->setNotBefore(time() + 5)
+                // Configures the expiration time ($expiry for this case) of the token (exp claim)
+                ->setExpiration(time() + $expiry)
+                //  Creating Claim email
+                ->set('emailId', $user->getEmail())
+                // Grant Type (Either access_token OR refresh_token)
+                ->set('grant_type', $grantType)
                 // Creating Signature.
                 ->sign($signer, base64_decode($this->serviceContainer->getParameter('api_secret')))
-                ->getToken()// Retrieves Generated Token Object
-                ->__toString(); // Converts Token into encoded String.
+                // Retrieves Generated Token Object
+                ->getToken()
+                // Converts Token into encoded String.
+                ->__toString()
+            ;
+
             $createJWTResult['message']['token'] = $token;
             $createJWTResult['status'] = true;
         } catch (\Exception $ex) {
@@ -286,7 +302,7 @@ class AuthenticateAuthorize extends BaseService
                 $ex->getMessage());
             throw new HttpException(500, ErrorConstants::INTERNAL_ERR);
         }
+
         return $createJWTResult;
     }
-
 }

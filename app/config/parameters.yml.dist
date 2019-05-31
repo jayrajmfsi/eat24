@@ -22,7 +22,7 @@ parameters:
     mailer_port: 465
     mailer_encryption: ssl
     api_secret: jayraj
-    api_access_token_expiry: 5
+    api_access_token_expiry: 3600
     api_refresh_token_expiry: 726363727
     image_dir: /Projects/eat24/web/images/
     restaurant_range: 10

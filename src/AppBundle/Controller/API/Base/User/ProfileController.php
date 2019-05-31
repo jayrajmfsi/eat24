@@ -1,4 +1,9 @@
 <?php
+/**
+ *  Controller having the CRUD actions of user profile and address
+ *  @category Controller
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 
 namespace AppBundle\Controller\API\Base\User;
 
@@ -16,6 +21,11 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Swagger\Annotations as SWG;
 
+/**
+ * Contains all the user and its address related actions
+ * Class ProfileController
+ * @package AppBundle\Controller\API\Base\User
+ */
 class ProfileController extends AbstractFOSRestController
 {
     /**
@@ -211,11 +221,9 @@ class ProfileController extends AbstractFOSRestController
             $utils = $this->container->get('eat24.utils');
             // Trimming Request Content.
             $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), true));
+
             // Validating the request content.
-            $this->container
-                ->get('eat24.user_api_validate_service')
-                ->validateOAuthRequest($content)
-            ;
+            $this->container->get('eat24.user_api_validate_service')->validateOAuthRequest($content);
 
             $authService = $this->container->get('eat24.authenticate_authorize_service');
             // Processing Request Content and Getting Result.
@@ -422,17 +430,14 @@ class ProfileController extends AbstractFOSRestController
             $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), true));
 
             // Validating the request content.
-            $this->container
-                ->get('eat24.user_api_validate_service')
-                ->validateOAuthRefreshRequest($content)
-            ;
+            $this->container->get('eat24.user_api_validate_service')->validateOAuthRefreshRequest($content);
 
             // Processing Request, Creating and returning final response Array from Controller.
             $response = $this->container
                 ->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('AuthenticationResponse',
-                    $this->container
-                        ->get('eat24.authenticate_authorize_service')
+                ->createUserApiSuccessResponse(
+                    'AuthenticationResponse',
+                    $this->container->get('eat24.authenticate_authorize_service')
                         ->processOAuthRefreshRequest($content)['message']['response']
                 )
             ;
@@ -596,7 +601,7 @@ class ProfileController extends AbstractFOSRestController
      *              @SWG\Property(
      *                  property="text",
      *                  type="string",
-     *                  example="Username provided in request is taken by someone else, please try with another username."
+     *                  example="Username provided is taken by someone else,please try with another username."
      *              )
      *          )
      *      )
@@ -678,25 +683,21 @@ class ProfileController extends AbstractFOSRestController
             $content = !empty($content) ? $utils->trimArrayValues($content) : $content;
 
             // Validating the request content.
-            $this->container
-                ->get('eat24.user_api_validate_service')
-                ->validateCreateUserRequest($content)
-            ;
+            $this->container->get('eat24.user_api_validate_service')->validateCreateUserRequest($content);
 
             // Processing the request and creating the final streamed response to be sent in response.
-            $this->container
-                ->get('eat24.user_api_processing_service')
-                ->processCreateUpdateUserRequest($content)
-            ;
+            $this->container->get('eat24.user_api_processing_service')->processCreateUpdateUserRequest($content);
 
             // Creating final response Array to be released from API Controller.
             $response = $this->container
                 ->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('UserResponse', [
-                    'status' => $this->container
-                        ->get('translator.default')
-                        ->trans('api.response.success.user_created')
-                ])
+                ->createUserApiSuccessResponse(
+                    'UserResponse',
+                    [
+                        'status' => $this->container
+                            ->get('translator.default')->trans('api.response.success.user_created')
+                    ]
+                )
             ;
         } catch (AccessDeniedHttpException $ex) {
             throw $ex;
@@ -955,26 +956,24 @@ class ProfileController extends AbstractFOSRestController
             $content = !empty($content) ? $utils->trimArrayValues($content) : $content;
 
             // Validating the request content.
-            $validateResult = $this->container
-                ->get('eat24.user_api_validate_service')
+            $validateResult = $this->container->get('eat24.user_api_validate_service')
                 ->validateUpdateUserRequest($content)
             ;
             $user = $validateResult['message']['response']['user'];
 
             // Processing the request and creating the final streamed response to be sent in response.
-            $this->container
-                ->get('eat24.user_api_processing_service')
-                ->processCreateUpdateUserRequest($content, $user)
-            ;
+            $this->container->get('eat24.user_api_processing_service')->processCreateUpdateUserRequest($content, $user);
 
             // Creating final response Array to be released from API Controller.
             $response = $this->container
                 ->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('UserResponse', [
-                    'status' => $this->container
-                        ->get('translator.default')
-                        ->trans('api.response.success.user_updated')
-                ])
+                ->createUserApiSuccessResponse(
+                    'UserResponse',
+                    [
+                        'status' => $this->container->get('translator.default')
+                            ->trans('api.response.success.user_updated')
+                    ]
+                )
             ;
         } catch (AccessDeniedHttpException $ex) {
             throw $ex;
@@ -1144,7 +1143,8 @@ class ProfileController extends AbstractFOSRestController
             $response = $this->container
                 ->get('eat24.api_response_service')
                 ->createUserApiSuccessResponse(
-                    'UserResponse', [
+                    'UserResponse',
+                    [
                         'phoneNumber' => $user['phoneNumber'],
                         'username' => $user['username']
                     ]
@@ -1375,14 +1375,17 @@ class ProfileController extends AbstractFOSRestController
 
             $isUpdate = Request::METHOD_PUT === $request->getMethod();
             // Validating the request content.
-            $validatedResult = $this->container
-                ->get('eat24.user_api_validate_service')
+            $validatedResult = $this->container->get('eat24.user_api_validate_service')
                 ->validateAddUpdateAddressRequest($content, $isUpdate)
             ;
             $address = $validatedResult['address'] ? $validatedResult['address'] : null;
             // Processing Request Content and Getting Result.
             $result = $this->container->get('eat24.user_api_processing_service')
-                ->processUpdateAddressRequest($content['UserDeliveryAddressRequest'], $validatedResult['user'], $address)
+                ->processUpdateAddressRequest(
+                    $content['UserDeliveryAddressRequest'],
+                    $validatedResult['user'],
+                    $address
+                )
             ;
 
             $transMessageKey = (false === $isUpdate) ? 'api.response.success.address_added'
@@ -1392,10 +1395,12 @@ class ProfileController extends AbstractFOSRestController
             $response = $this->container
                 ->get('eat24.api_response_service')
                 ->createUserApiSuccessResponse(
-                    'UserDeliveryAddressResponse', [
-                    'status' => $this->container->get('translator.default')->trans($transMessageKey),
-                    'addressCode' => $result['addressCode']
-                ])
+                    'UserDeliveryAddressResponse',
+                    [
+                        'status' => $this->container->get('translator.default')->trans($transMessageKey),
+                        'addressCode' => $result['addressCode']
+                    ]
+                )
             ;
         } catch (BadRequestHttpException $ex) {
             throw $ex;
@@ -1810,9 +1815,13 @@ class ProfileController extends AbstractFOSRestController
                 ->processDeleteAddressRequest($content)
             ;
             $response = $this->container->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('DeleteAddressResponse', [
-                    'status' => $this->container->get('translator')->trans('api.response.success.address_deleted')
-                ]);
+                ->createUserApiSuccessResponse(
+                    'DeleteAddressResponse',
+                    [
+                        'status' => $this->container->get('translator')->trans('api.response.success.address_deleted')
+                    ]
+                )
+            ;
         } catch (BadRequestHttpException $ex) {
             throw $ex;
         } catch (UnprocessableEntityHttpException $ex) {
@@ -1873,7 +1882,8 @@ class ProfileController extends AbstractFOSRestController
      *              @SWG\Property(
      *                  property="status",
      *                  type="string",
-     *                  example="Sorry. The Address is not deliverable. Please try with another address or add another address"
+     *                  example="Sorry. The Address is not deliverable. Please try with another address or add
+     *                  another address"
      *              )
      *          )
      *      )
@@ -2050,7 +2060,9 @@ class ProfileController extends AbstractFOSRestController
                 :  'api.response.success.location_not_deliverable'
             ;
             $response = $this->container->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse('detectLocationResponse',[
+                ->createUserApiSuccessResponse(
+                    'detectLocationResponse',
+                    [
                         'status' =>  $this->container->get('translator')->trans($translationKey),
                         'isDeliverable' => $result['status']
                     ]

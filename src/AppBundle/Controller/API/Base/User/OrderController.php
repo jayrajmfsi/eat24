@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  Used for listing and placing orders
+ *  @category Service
+ *  @author Jayraj Arora<jayraja@mindfiresolutions.com>
+ */
 namespace AppBundle\Controller\API\Base\User;
 
 use AppBundle\Constants\ErrorConstants;
@@ -14,16 +18,13 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Swagger\Annotations as SWG;
 
+/**
+ * Contains actions related to order
+ * Class OrderController
+ * @package AppBundle\Controller\API\Base\User
+ */
 class OrderController extends AbstractFOSRestController
 {
-    public function __construct()
-    {
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Headers: content-type, Authorization');
-        header('Content-Type: application/json; charset=UTF-8');
-        header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE");
-    }
-
     /**
      * Place an order for a particular user
      *
@@ -274,25 +275,27 @@ class OrderController extends AbstractFOSRestController
         // $response to be returned from API.
         $response = null;
         try {
-
+            // trimming the request content
             $utils = $this->container->get('eat24.utils');
             $content = $utils->trimArrayValues(json_decode(trim($request->getContent()), true));
             // Validating the request content.
             $validationResult = $this->container->get('eat24.user_api_validate_service')
                 ->validateCreateOrderRequest($content)
             ;
-
+            // process the create order request
             $result = $this->container->get('eat24.user_api_processing_service')
                 ->processCreateOrderRequest($validationResult['message']['response'], $content['orderRequest'])
             ;
             // Creating final response Array to be released from API Controller.
             $response = $this->container->get('eat24.api_response_service')
                 ->createUserApiSuccessResponse(
-                    'OrderDetailsResponse', [
+                    'OrderDetailsResponse',
+                    [
                         'status' => $this->container->get('translator')->trans('api.response.success.order_booked'),
                         'transactionId' => $result['ref']
-                ]
-            );
+                    ]
+                )
+            ;
         } catch (AccessDeniedHttpException $ex) {
             throw $ex;
         } catch (BadRequestHttpException $ex) {
@@ -314,6 +317,7 @@ class OrderController extends AbstractFOSRestController
 
     /**
      * List orders for a particular User
+     *
      * @Get("/users/orders.{_format}")
      * @Options("/users/orders.{_format}")
      *
@@ -479,15 +483,17 @@ class OrderController extends AbstractFOSRestController
      */
     public function listOrders()
     {
+        // response to be returned
         $response = null;
         $logger = $this->container->get('monolog.logger.exception');
         try {
+            // fetch order lists
             $result = $this->container->get('eat24.user_api_processing_service')->processListOrdersRequest();
 
+            // create order list response
             $response = $this->container->get('eat24.api_response_service')
-                ->createUserApiSuccessResponse(
-                    'OrderListResponse', $result['message']['response']
-                );
+                ->createUserApiSuccessResponse('OrderListResponse', $result['message']['response'])
+            ;
         } catch (AccessDeniedHttpException $ex) {
             throw $ex;
         } catch (BadRequestHttpException $ex) {
