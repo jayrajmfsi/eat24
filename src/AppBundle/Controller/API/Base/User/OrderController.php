@@ -34,6 +34,7 @@ class OrderController extends AbstractFOSRestController
      * @SWG\Parameter(
      *     name="apiKey",
      *     in="header",
+     *     type="string",
      *     required=true,
      *     description="Authorization with the help of jwt access token"
      * )
@@ -317,13 +318,12 @@ class OrderController extends AbstractFOSRestController
 
     /**
      * List orders for a particular User
-     *
      * @Get("/users/orders.{_format}")
-     * @Options("/users/orders.{_format}")
      *
      * @SWG\Parameter(
      *     name="apiKey",
      *     in="header",
+     *     type="string",
      *     required=true,
      *     description="Authorization with the help of jwt access token"
      * )

@@ -667,7 +667,6 @@ class ProfileController extends AbstractFOSRestController
      *      )
      *  )
      *  @SWG\Tag(name="Profile")
-     * @Options("/users.{_format}")
      * @param Request $request
      * @return array
      */
@@ -725,6 +724,7 @@ class ProfileController extends AbstractFOSRestController
      * @SWG\Parameter(
      *     name="apiKey",
      *     in="header",
+     *     type="string",
      *     required=true,
      *     description="Authorization with the help of jwt access token"
      * )
@@ -1001,6 +1001,7 @@ class ProfileController extends AbstractFOSRestController
      * @SWG\Parameter(
      *     name="apiKey",
      *     in="header",
+     *     type="string",
      *     required=true,
      *     description="Authorization with the help of jwt access token"
      * )
@@ -1173,11 +1174,11 @@ class ProfileController extends AbstractFOSRestController
      *
      * @Post("/users/addresses.{_format}")
      * @Put("/users/addresses.{_format}")
-     * @Options("/users/addresses.{_format}")
      *
      * @SWG\Parameter(
      *     name="apiKey",
      *     in="header",
+     *     type="string",
      *     required=true,
      *     description="Authorization with the help of jwt access token"
      * )
@@ -1426,6 +1427,7 @@ class ProfileController extends AbstractFOSRestController
      * @SWG\Parameter(
      *     name="apiKey",
      *     in="header",
+     *     type="string",
      *     required=true,
      *     description="Authorization with the help of jwt access token"
      * )
@@ -1451,11 +1453,6 @@ class ProfileController extends AbstractFOSRestController
      *                      property="completeAddress",
      *                      type="string",
      *                      example="Chandaka Industrial Estate,DLF Building, UG"
-     *                  ),
-     *                  @SWG\Property(
-     *                     property="location",
-     *                     type="string",
-     *                     example="Chandaka Industrial"
      *                  ),
      *                  @SWG\Property(
      *                     property="location",
@@ -1605,11 +1602,11 @@ class ProfileController extends AbstractFOSRestController
      * Deletes an address
      *
      * @Delete("/users/addresses.{_format}")
-     * @Options("/users/addresses.{_format}")
      *
      * @SWG\Parameter(
      *     name="apiKey",
      *     in="header",
+     *     type="string",
      *     required=true,
      *     description="Authorization with the help of jwt access token"
      * )
@@ -1847,6 +1844,7 @@ class ProfileController extends AbstractFOSRestController
      * @SWG\Parameter(
      *     name="apiKey",
      *     in="header",
+     *     type="string",
      *     required=true,
      *     description="Authorization with the help of jwt access token"
      * )
