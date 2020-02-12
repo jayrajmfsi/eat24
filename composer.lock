@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b36120307aaedc4147e5c3ae810c0f79",
+    "content-hash": "d2b20d73636c8e93119c120abc95142f",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -972,58 +972,6 @@
                 "orm"
             ],
             "time": "2017-12-17T02:57:51+00:00"
-        },
-        {
-            "name": "ekreative/health-check-bundle",
-            "version": "1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ekreative/health-check-bundle.git",
-                "reference": "094035e2d6abb2cbd2aab28f58665b227cff6e54"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ekreative/health-check-bundle/zipball/094035e2d6abb2cbd2aab28f58665b227cff6e54",
-                "reference": "094035e2d6abb2cbd2aab28f58665b227cff6e54",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1",
-                "symfony/framework-bundle": "^3.4|^4.0"
-            },
-            "require-dev": {
-                "doctrine/doctrine-bundle": "^1.10",
-                "ext-redis": "*",
-                "friendsofphp/php-cs-fixer": "^2.14",
-                "phpunit/phpunit": "^7",
-                "symfony/browser-kit": "^3.4|^4.0",
-                "symfony/monolog-bundle": "^3.3",
-                "symfony/phpunit-bridge": "^3.4|^4.0",
-                "symfony/yaml": "^3.4|^4.0"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "Ekreative\\HealthCheckBundle\\": "src/Ekreative/HealthCheckBundle/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fred Cox",
-                    "email": "mcfedr@gmail.com"
-                }
-            ],
-            "description": "A bundle that provides a simple /healthcheck route",
-            "keywords": [
-                "doctrine",
-                "healthcheck",
-                "redis"
-            ],
-            "time": "2019-02-27T08:33:59+00:00"
         },
         {
             "name": "exsyst/swagger",
@@ -3734,6 +3682,7 @@
                 "code",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-code",
             "time": "2016-04-20T17:26:42+00:00"
         },
         {
@@ -3788,6 +3737,7 @@
                 "events",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-eventmanager",
             "time": "2018-04-25T15:33:34+00:00"
         },
         {
@@ -3855,6 +3805,58 @@
     ],
     "packages-dev": [
         {
+            "name": "ekreative/health-check-bundle",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ekreative/health-check-bundle.git",
+                "reference": "094035e2d6abb2cbd2aab28f58665b227cff6e54"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ekreative/health-check-bundle/zipball/094035e2d6abb2cbd2aab28f58665b227cff6e54",
+                "reference": "094035e2d6abb2cbd2aab28f58665b227cff6e54",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "symfony/framework-bundle": "^3.4|^4.0"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "^1.10",
+                "ext-redis": "*",
+                "friendsofphp/php-cs-fixer": "^2.14",
+                "phpunit/phpunit": "^7",
+                "symfony/browser-kit": "^3.4|^4.0",
+                "symfony/monolog-bundle": "^3.3",
+                "symfony/phpunit-bridge": "^3.4|^4.0",
+                "symfony/yaml": "^3.4|^4.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Ekreative\\HealthCheckBundle\\": "src/Ekreative/HealthCheckBundle/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fred Cox",
+                    "email": "mcfedr@gmail.com"
+                }
+            ],
+            "description": "A bundle that provides a simple /healthcheck route",
+            "keywords": [
+                "doctrine",
+                "healthcheck",
+                "redis"
+            ],
+            "time": "2019-02-27T08:33:59+00:00"
+        },
+        {
             "name": "sensio/generator-bundle",
             "version": "v3.1.7",
             "source": {
@@ -3906,20 +3908,21 @@
                 }
             ],
             "description": "This bundle generates code for you",
+            "abandoned": true,
             "time": "2017-12-07T15:36:41+00:00"
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v3.4.23",
+            "version": "v3.4.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "b539f37134c10edbf85dc0567be4151c56870f5e"
+                "reference": "a43a2f6c465a2d99635fea0addbebddc3864ad97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/b539f37134c10edbf85dc0567be4151c56870f5e",
-                "reference": "b539f37134c10edbf85dc0567be4151c56870f5e",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/a43a2f6c465a2d99635fea0addbebddc3864ad97",
+                "reference": "a43a2f6c465a2d99635fea0addbebddc3864ad97",
                 "shasum": ""
             },
             "require": {
@@ -3971,7 +3974,7 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2019-02-16T18:50:26+00:00"
+            "time": "2019-04-16T09:03:16+00:00"
         }
     ],
     "aliases": [],
